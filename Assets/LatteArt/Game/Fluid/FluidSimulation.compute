@@ -1,0 +1,227 @@
+#pragma kernel AddForce
+#pragma kernel InjectMilk
+#pragma kernel Divergence
+#pragma kernel Jacobi
+#pragma kernel SubtractGradient
+#pragma kernel AdvectVelocity
+#pragma kernel AdvectDye
+#pragma kernel CorrectDye
+
+#define THREAD_GROUP_SIZE 8
+
+static const int2 Left = int2(-1, 0);
+static const int2 Right = int2(1, 0);
+static const int2 Down = int2(0, -1);
+static const int2 Up = int2(0, 1);
+
+uint _Resolution;
+float _TexelSize;
+float _CupRadius;
+float _DeltaTime;
+
+static const float MilkEdgeTexels = 1.5;
+
+float2 _ForceCenter;
+float2 _ForceVelocity;
+float _ForceRadius;
+
+float2 _MilkCenter;
+float _MilkRadius;
+
+float2 _InflowCenter;
+float _InflowRadius;
+float _InflowRate;
+float _InflowSink;
+
+float _VelocityDamping;
+float _AdvectionSign;
+
+SamplerState linearClampSampler;
+
+Texture2D<float2> _Velocity;
+RWTexture2D<float2> _VelocityOut;
+Texture2D<float> _Dye;
+Texture2D<float> _DyeForward;
+Texture2D<float> _DyeBackward;
+RWTexture2D<float> _DyeOut;
+Texture2D<float> _Pressure;
+RWTexture2D<float> _PressureOut;
+Texture2D<float> _Divergence;
+RWTexture2D<float> _DivergenceOut;
+
+bool IsOutsideGrid(uint2 cell)
+{
+    return any(cell >= _Resolution);
+}
+
+float2 CellUv(int2 cell)
+{
+    return (cell + 0.5) * _TexelSize;
+}
+
+bool IsFluid(int2 cell)
+{
+    return distance(CellUv(cell), 0.5) < _CupRadius;
+}
+
+float Gaussian(float2 offset, float radius)
+{
+    return exp(-dot(offset, offset) / (radius * radius));
+}
+
+float NeighborPressure(int2 neighbor, float centerPressure)
+{
+    return IsFluid(neighbor) ? _Pressure[neighbor] : centerPressure;
+}
+
+float2 BlockFlowIntoWalls(int2 cell, float2 velocity)
+{
+    if (!IsFluid(cell + Left)) velocity.x = max(velocity.x, 0);
+    if (!IsFluid(cell + Right)) velocity.x = min(velocity.x, 0);
+    if (!IsFluid(cell + Down)) velocity.y = max(velocity.y, 0);
+    if (!IsFluid(cell + Up)) velocity.y = min(velocity.y, 0);
+    return velocity;
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void AddForce(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _VelocityOut[cell] = 0;
+        return;
+    }
+
+    float falloff = Gaussian(CellUv(cell) - _ForceCenter, _ForceRadius);
+    _VelocityOut[cell] = _Velocity[cell] + _ForceVelocity * falloff;
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void InjectMilk(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _DyeOut[cell] = 0;
+        return;
+    }
+
+    float edgeWidth = MilkEdgeTexels * _TexelSize;
+    float distanceFromStream = distance(CellUv(cell), _MilkCenter);
+    float stream = 1 - smoothstep(_MilkRadius - edgeWidth, _MilkRadius, distanceFromStream);
+    _DyeOut[cell] = max(_Dye[cell], stream);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void Divergence(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _DivergenceOut[cell] = 0;
+        return;
+    }
+
+    float dVxDx = _Velocity[cell + Right].x - _Velocity[cell + Left].x;
+    float dVyDy = _Velocity[cell + Up].y - _Velocity[cell + Down].y;
+    float velocityDivergence = (dVxDx + dVyDy) * 0.5 / _TexelSize;
+    float inflow = _InflowRate * Gaussian(CellUv(cell) - _InflowCenter, _InflowRadius) - _InflowSink;
+    _DivergenceOut[cell] = velocityDivergence - inflow;
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void Jacobi(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _PressureOut[cell] = 0;
+        return;
+    }
+
+    float center = _Pressure[cell];
+    float neighborSum =
+        NeighborPressure(cell + Left, center) +
+        NeighborPressure(cell + Right, center) +
+        NeighborPressure(cell + Down, center) +
+        NeighborPressure(cell + Up, center);
+    _PressureOut[cell] = (neighborSum - _Divergence[cell] * _TexelSize * _TexelSize) * 0.25;
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void SubtractGradient(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _VelocityOut[cell] = 0;
+        return;
+    }
+
+    float center = _Pressure[cell];
+    float2 pressureGradient = float2(
+        NeighborPressure(cell + Right, center) - NeighborPressure(cell + Left, center),
+        NeighborPressure(cell + Up, center) - NeighborPressure(cell + Down, center)) * 0.5 / _TexelSize;
+    _VelocityOut[cell] = BlockFlowIntoWalls(cell, _Velocity[cell] - pressureGradient);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void AdvectVelocity(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _VelocityOut[cell] = 0;
+        return;
+    }
+
+    float2 departure = CellUv(cell) - _DeltaTime * _Velocity[cell];
+    float2 velocity = _Velocity.SampleLevel(linearClampSampler, departure, 0);
+    _VelocityOut[cell] = velocity / (1 + _VelocityDamping * _DeltaTime);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void AdvectDye(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _DyeOut[cell] = 0;
+        return;
+    }
+
+    float2 departure = CellUv(cell) - _AdvectionSign * _DeltaTime * _Velocity[cell];
+    _DyeOut[cell] = _Dye.SampleLevel(linearClampSampler, departure, 0);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void CorrectDye(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _DyeOut[cell] = 0;
+        return;
+    }
+
+    float2 departure = CellUv(cell) - _DeltaTime * _Velocity[cell];
+    int2 corner = clamp((int2)floor(departure * _Resolution - 0.5), 0, (int)_Resolution - 2);
+    float bottomLeft = _Dye[corner];
+    float bottomRight = _Dye[corner + Right];
+    float topLeft = _Dye[corner + Up];
+    float topRight = _Dye[corner + Right + Up];
+    float minimum = min(min(bottomLeft, bottomRight), min(topLeft, topRight));
+    float maximum = max(max(bottomLeft, bottomRight), max(topLeft, topRight));
+
+    float corrected = _DyeForward[cell] + 0.5 * (_Dye[cell] - _DyeBackward[cell]);
+    _DyeOut[cell] = clamp(corrected, minimum, maximum);
+}

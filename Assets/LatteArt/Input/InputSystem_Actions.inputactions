@@ -990,6 +990,85 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Latte",
+            "id": "640b82c8-9388-4342-b769-69b1410603b8",
+            "actions": [
+                {
+                    "name": "Point",
+                    "type": "Value",
+                    "id": "9a968b95-d4b1-416f-80c8-920f5376a62f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Pour",
+                    "type": "Button",
+                    "id": "7f8fb801-b8c5-40ed-9e69-631e7b28a61e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ResizeStream",
+                    "type": "Value",
+                    "id": "218dd330-0c5b-46fc-b2bc-43809d3669c0",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "439cc501-da4c-4693-a382-de9dde6b4a1c",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Touch",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0a514bd5-5c72-4e49-83a9-15bbef9d31a1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pour",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e2c86a5-c2d1-431e-b6f4-c3f1db603353",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Pour",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "091aea06-d330-44dc-94d0-f555d922ae99",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ResizeStream",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

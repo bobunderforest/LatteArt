@@ -47,10 +47,16 @@ Standard Microsoft C# convention unless rule below differ.
 
 **Naming**
 
-- `PascalCase` type, method, property, event, public member; `_camelCase` private field; `camelCase` local,
-  parameter. `I` prefix interface. Bool name read as condition (`isGrounded`, `hasTarget`).
+- `PascalCase` type, method, property, event, public member; `camelCase` serialized field (`[SerializeField]`,
+  no underscore, Rider "Unity serialized field" rule); `_camelCase` other private field; `camelCase` local,
+  parameter. Serialized name must not hide inherited `Component` member (`camera`, `renderer`): pick
+  descriptive name (`viewCamera`). `I` prefix interface. Bool name read as condition (`isGrounded`, `hasTarget`).
 - One public type per file, file name = type name.
-- Namespace match folder under `Assets/LatteArt/Scripts/` (root namespace `LatteArt`).
+- Namespace match feature folder under `Assets/LatteArt/Game/` (root namespace `LatteArt`, so
+  `Game/Fluid/` is `LatteArt.Fluid`).
+- Shaders (HLSL) follow Unity URP ShaderLibrary style, not Rider C++ defaults: `camelCase` local, parameter;
+  `PascalCase` function, struct; `_PascalCase` property, uniform, texture; `UPPER_SNAKE` macro;
+  `PascalCase` `static const`.
 
 **Comments**
 
@@ -93,8 +99,10 @@ Standard Microsoft C# convention unless rule below differ.
 
 ## Conventions
 
-- All project content under `Assets/LatteArt/`: `Scripts/`, `Prefabs/`, `Scenes/`, `Settings/`, `Art/`,
-  `Audio/`, `Tests/`. Third-party assets outside `LatteArt`.
+- All project content under `Assets/LatteArt/`: `Game/`, `Input/`, `Scenes/`, `Settings/`, `Tests/`.
+  Third-party assets outside `LatteArt`.
+- Game feature = one subfolder `Game/<Feature>/` (`Game/Fluid/`, `Game/Pour/`) holding all its content: scripts,
+  shaders, materials, `SO_` assets, prefabs, textures, audio. No split by asset type.
 - Assembly Definition per area (`LatteArt.Runtime`, `LatteArt.Editor`, `LatteArt.Tests.EditMode`,
   `LatteArt.Tests.PlayMode`); editor-only code in `Editor/` folder, own asmdef.
 - Asset prefix: `PF_` prefab, `SO_` ScriptableObject asset, `M_` material, `T_` texture, `SFX_` audio,
