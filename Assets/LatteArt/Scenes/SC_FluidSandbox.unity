@@ -544,6 +544,56 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 1dfdfc7456bed104897a710ff6973ded, type: 2}
   simulationShader: {fileID: 7200000, guid: eac9d1bdd03eb9145ae2fa03fb44bca3, type: 3}
   surfaceRenderer: {fileID: 338987263}
+--- !u!1 &1557143968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557143970}
+  - component: {fileID: 1557143969}
+  m_Layer: 0
+  m_Name: StrawTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1557143969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557143968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e183645267698479331ef3238113c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Straw.StrawTool
+  surface: {fileID: 1432034929}
+  viewCamera: {fileID: 315646787}
+  settings: {fileID: 11400000, guid: 9e7da602ac9e59245817ea7f85219e36, type: 2}
+  pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  dragAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  resizeAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!4 &1557143970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557143968}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.07699, y: -0, z: -4.91613}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1970701282
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,6 +644,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2069120790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2069120792}
+  - component: {fileID: 2069120791}
+  m_Layer: 0
+  m_Name: ToolSelector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2069120791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069120790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d61cf9f00bcc614ea1c751c7fb9a961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Tools.ToolSelector
+  slots:
+  - tool: {fileID: 1970701283}
+    selectAction: {fileID: 7903166510273518912, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - tool: {fileID: 1557143969}
+    selectAction: {fileID: 999351806976023328, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  initialSlot: 0
+--- !u!4 &2069120792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069120790}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.07699, y: -0, z: -4.91613}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -602,3 +702,5 @@ SceneRoots:
   - {fileID: 166868500}
   - {fileID: 1432034928}
   - {fileID: 1970701284}
+  - {fileID: 1557143970}
+  - {fileID: 2069120792}

@@ -18,6 +18,7 @@ namespace LatteArt.Fluid
 
         [Header("Dynamics")]
         [SerializeField, Min(0f)] private float velocityDamping = 1f;
+        [SerializeField, Range(0.02f, 1f)] private float stirSettleTime = 0.3f;
 
         public int Resolution => resolution;
         public float CupRadius => cupRadius;
@@ -25,5 +26,6 @@ namespace LatteArt.Fluid
         public int MaxStepsPerFrame => maxStepsPerFrame;
         public int PressureIterations => pressureIterations;
         public float VelocityDamping => velocityDamping;
+        public float StirSettleTime => stirSettleTime;
     }
 }

@@ -1,14 +1,14 @@
 using UnityEngine;
 
-namespace LatteArt.Pour
+namespace LatteArt.Tools
 {
-    public sealed class PourStream
+    public sealed class ToolRadius
     {
         private readonly float _minRadius;
         private readonly float _maxRadius;
         private readonly float _resizeFactor;
 
-        public PourStream(float initialRadius, float minRadius, float maxRadius, float resizeFactor)
+        public ToolRadius(float initialRadius, float minRadius, float maxRadius, float resizeFactor)
         {
             _minRadius = minRadius;
             _maxRadius = maxRadius;

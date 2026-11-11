@@ -1,4 +1,5 @@
 using LatteArt.Fluid;
+using LatteArt.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,19 +17,16 @@ namespace LatteArt.Pour
         [SerializeField] private InputActionReference pourAction;
         [SerializeField] private InputActionReference resizeStreamAction;
 
-        private PourStream _stream;
-        private Vector2 _previousPointerUv;
-        private bool _hasPreviousPointerUv;
+        private readonly PointerMotion _pointerMotion = new();
+        private bool _hasValidSetup;
+        private ToolRadius _streamRadius;
 
         private void Awake()
         {
-            if (!HasValidSetup())
-            {
-                enabled = false;
-                return;
-            }
+            _hasValidSetup = HasValidSetup();
+            if (!_hasValidSetup) return;
 
-            _stream = new PourStream(
+            _streamRadius = new ToolRadius(
                 settings.StreamRadius,
                 settings.MinStreamRadius,
                 settings.MaxStreamRadius,
@@ -37,17 +35,14 @@ namespace LatteArt.Pour
 
         private void OnEnable()
         {
-            pointAction.action.Enable();
-            pourAction.action.Enable();
-            resizeStreamAction.action.Enable();
+            if (!_hasValidSetup) enabled = false;
         }
 
         private void OnDisable()
         {
-            pointAction.action.Disable();
-            pourAction.action.Disable();
-            resizeStreamAction.action.Disable();
-            _hasPreviousPointerUv = false;
+            _pointerMotion.Reset();
+            if (surface == null) return;
+
             surface.HideBrush();
             if (surface.Simulation != null) surface.Simulation.StopInflow();
         }
@@ -57,25 +52,20 @@ namespace LatteArt.Pour
             var simulation = surface.Simulation;
             if (simulation == null) return;
 
-            _stream.Resize(resizeStreamAction.action.ReadValue<float>());
+            _streamRadius.Resize(resizeStreamAction.action.ReadValue<float>());
 
             var pointerRay = viewCamera.ScreenPointToRay(pointAction.action.ReadValue<Vector2>());
             if (!surface.TryGetSurfaceUv(pointerRay, out var pointerUv))
             {
-                _hasPreviousPointerUv = false;
+                _pointerMotion.Reset();
                 surface.HideBrush();
                 simulation.StopInflow();
                 return;
             }
 
             var deltaTime = Time.deltaTime;
-            var pointerVelocity = _hasPreviousPointerUv && deltaTime > 0f
-                ? (pointerUv - _previousPointerUv) / deltaTime
-                : Vector2.zero;
-            _previousPointerUv = pointerUv;
-            _hasPreviousPointerUv = true;
-
-            surface.ShowBrush(pointerUv, _stream.Radius);
+            _pointerMotion.MoveTo(pointerUv, deltaTime);
+            surface.ShowBrush(pointerUv, _streamRadius.Radius);
 
             if (!pourAction.action.IsPressed())
             {
@@ -83,7 +73,7 @@ namespace LatteArt.Pour
                 return;
             }
 
-            Pour(simulation, pointerUv, pointerVelocity, deltaTime);
+            Pour(simulation, pointerUv, _pointerMotion.Velocity, deltaTime);
         }
 
         private bool HasValidSetup()
@@ -100,7 +90,7 @@ namespace LatteArt.Pour
 
         private void Pour(FluidSimulation simulation, Vector2 uv, Vector2 pitcherVelocity, float deltaTime)
         {
-            var radius = _stream.Radius;
+            var radius = _streamRadius.Radius;
             var dragImpulse = pitcherVelocity * (settings.DragStrength * deltaTime);
 
             simulation.SetInflow(uv, radius, settings.InflowRate);

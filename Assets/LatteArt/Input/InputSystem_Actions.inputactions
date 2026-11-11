@@ -1005,7 +1005,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Pour",
+                    "name": "Use",
                     "type": "Button",
                     "id": "7f8fb801-b8c5-40ed-9e69-631e7b28a61e",
                     "expectedControlType": "Button",
@@ -1014,13 +1014,31 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ResizeStream",
+                    "name": "Resize",
                     "type": "Value",
                     "id": "218dd330-0c5b-46fc-b2bc-43809d3669c0",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "SelectPour",
+                    "type": "Button",
+                    "id": "e466eb6f-584f-4684-8a66-3a5a1009203a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectStraw",
+                    "type": "Button",
+                    "id": "367894dc-aa07-4483-bf65-4429e19f9ef4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1042,7 +1060,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Pour",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1053,7 +1071,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
-                    "action": "Pour",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1064,7 +1082,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "ResizeStream",
+                    "action": "Resize",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "67b9db2e-b512-47c1-aa1b-0b51309c3ab5",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectPour",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9871d4b1-fe08-485a-9a89-5236fe000eed",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectStraw",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
