@@ -23,6 +23,10 @@ namespace LatteArt.Fluid
         [Header("Milk Sinking")]
         [SerializeField, Range(0f, 1f)] private float milkSinkFraction = 0.5f;
         [SerializeField, Range(0.05f, 3f)] private float milkSinkTime = 0.8f;
+        [SerializeField, Range(0.05f, 2f)] private float fullDilutionVolume = 0.3f;
+
+        [Header("Foam Texture")]
+        [SerializeField, Range(0.5f, 10f)] private float foamRefreshTime = 3f;
 
         public int Resolution => resolution;
         public float CupRadius => cupRadius;
@@ -33,5 +37,7 @@ namespace LatteArt.Fluid
         public float StirSettleTime => stirSettleTime;
         public float MilkSinkFraction => milkSinkFraction;
         public float MilkSinkTime => milkSinkTime;
+        public float FullDilutionVolume => fullDilutionVolume;
+        public float FoamRefreshTime => foamRefreshTime;
     }
 }

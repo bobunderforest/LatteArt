@@ -9,6 +9,7 @@
 #pragma kernel AdvectDye
 #pragma kernel AdvectSink
 #pragma kernel CorrectDye
+#pragma kernel AdvectFoamCoords
 
 #define THREAD_GROUP_SIZE 8
 
@@ -48,6 +49,8 @@ float _VolumeBalance;
 float _SinkFraction;
 float _SinkRetention;
 
+float2 _FoamResetMask;
+
 float _VelocityDamping;
 float _AdvectionSign;
 
@@ -59,6 +62,8 @@ Texture2D<float2> _Stir;
 RWTexture2D<float2> _StirOut;
 Texture2D<float> _Sink;
 RWTexture2D<float> _SinkOut;
+Texture2D<float4> _FoamCoords;
+RWTexture2D<float4> _FoamCoordsOut;
 Texture2D<float> _Dye;
 Texture2D<float> _DyeForward;
 Texture2D<float> _DyeBackward;
@@ -318,4 +323,22 @@ void CorrectDye(uint3 id : SV_DispatchThreadID)
     float2 departure = CellUv(cell) - _DeltaTime * FlowVelocity(cell);
     float corrected = _DyeForward[cell] + 0.5 * (_Dye[cell] - _DyeBackward[cell]);
     _DyeOut[cell] = ClampToDepartureNeighborhood(corrected, departure);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void AdvectFoamCoords(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+
+    float4 restingCoords = CellUv(cell).xyxy;
+    if (!IsFluid(cell))
+    {
+        _FoamCoordsOut[cell] = restingCoords;
+        return;
+    }
+
+    float2 departure = CellUv(cell) - _DeltaTime * FlowVelocity(cell);
+    float4 advectedCoords = _FoamCoords.SampleLevel(linearClampSampler, departure, 0);
+    _FoamCoordsOut[cell] = lerp(advectedCoords, restingCoords, _FoamResetMask.xxyy);
 }

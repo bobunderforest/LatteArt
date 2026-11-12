@@ -21,3 +21,5 @@ MonoBehaviour:
   stirSettleTime: 0.15
   milkSinkFraction: 0.6
   milkSinkTime: 0.4
+  fullDilutionVolume: 1.6
+  foamRefreshTime: 3

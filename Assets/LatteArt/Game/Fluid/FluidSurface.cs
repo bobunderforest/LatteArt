@@ -8,6 +8,9 @@ namespace LatteArt.Fluid
         private const int AfterToolsExecutionOrder = 100;
 
         private static readonly int DyeTextureId = Shader.PropertyToID("_DyeTex");
+        private static readonly int FoamCoordsTextureId = Shader.PropertyToID("_FoamCoordsTex");
+        private static readonly int FoamPhaseId = Shader.PropertyToID("_FoamPhase");
+        private static readonly int CoffeeDilutionId = Shader.PropertyToID("_CoffeeDilution");
         private static readonly int CupRadiusId = Shader.PropertyToID("_CupRadius");
         private static readonly int BrushCenterId = Shader.PropertyToID("_BrushCenter");
         private static readonly int BrushRadiusId = Shader.PropertyToID("_BrushRadius");
@@ -107,6 +110,9 @@ namespace LatteArt.Fluid
         {
             surfaceRenderer.GetPropertyBlock(_surfaceProperties);
             _surfaceProperties.SetTexture(DyeTextureId, _simulation.Dye);
+            _surfaceProperties.SetTexture(FoamCoordsTextureId, _simulation.FoamCoords);
+            _surfaceProperties.SetFloat(FoamPhaseId, _simulation.FoamPhase);
+            _surfaceProperties.SetFloat(CoffeeDilutionId, _simulation.CoffeeDilution);
             _surfaceProperties.SetFloat(CupRadiusId, _simulation.CupRadius);
             _surfaceProperties.SetVector(BrushCenterId, _brushCenter);
             _surfaceProperties.SetFloat(BrushRadiusId, _brushRadius);
