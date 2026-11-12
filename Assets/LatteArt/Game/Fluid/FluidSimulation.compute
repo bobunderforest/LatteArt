@@ -44,6 +44,9 @@ float _MilkRadius;
 float2 _InflowCenter;
 float _InflowRadius;
 float _InflowRate;
+float2 _BlowCenter;
+float _BlowRadius;
+float _BlowRate;
 float _VolumeBalance;
 
 float _SinkFraction;
@@ -101,6 +104,11 @@ float2 FlowVelocity(int2 cell)
 float InflowProfile(int2 cell)
 {
     return _InflowRate * Gaussian(CellUv(cell) - _InflowCenter, _InflowRadius);
+}
+
+float BlowProfile(int2 cell)
+{
+    return _BlowRate * Gaussian(CellUv(cell) - _BlowCenter, _BlowRadius);
 }
 
 float NeighborPressure(int2 neighbor, float centerPressure)
@@ -218,7 +226,7 @@ void Divergence(uint3 id : SV_DispatchThreadID)
     float dVyDy = FlowVelocity(cell + Up).y - FlowVelocity(cell + Down).y;
     float velocityDivergence = (dVxDx + dVyDy) * 0.5 / _TexelSize;
     float sinking = _Sink[cell] * (1 - _SinkRetention) / _DeltaTime;
-    float surfaceSource = InflowProfile(cell) - sinking - _VolumeBalance;
+    float surfaceSource = InflowProfile(cell) + BlowProfile(cell) - sinking - _VolumeBalance;
     _DivergenceOut[cell] = velocityDivergence - surfaceSource;
 }
 
@@ -322,7 +330,8 @@ void CorrectDye(uint3 id : SV_DispatchThreadID)
 
     float2 departure = CellUv(cell) - _DeltaTime * FlowVelocity(cell);
     float corrected = _DyeForward[cell] + 0.5 * (_Dye[cell] - _DyeBackward[cell]);
-    _DyeOut[cell] = ClampToDepartureNeighborhood(corrected, departure);
+    float upwelledCoffeeShare = 1 - exp(-BlowProfile(cell) * _DeltaTime);
+    _DyeOut[cell] = ClampToDepartureNeighborhood(corrected, departure) * (1 - upwelledCoffeeShare);
 }
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]

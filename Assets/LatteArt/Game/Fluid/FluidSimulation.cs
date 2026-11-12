@@ -7,10 +7,10 @@ namespace LatteArt.Fluid
     public sealed class FluidSimulation : IDisposable
     {
         private const int ThreadGroupSize = 8;
-        private const float InactiveInflowRadius = 1f;
+        private const float InactiveSourceRadius = 1f;
         private const float GridMarginTexels = 1.5f;
-        private const int InflowMassSamplesPerAxis = 16;
-        private const float InflowExtentInRadii = 3f;
+        private const int SourceMassSamplesPerAxis = 16;
+        private const float SourceExtentInRadii = 3f;
 
         private static readonly Vector2 CupCenterUv = new(0.5f, 0.5f);
 
@@ -34,6 +34,9 @@ namespace LatteArt.Fluid
         private static readonly int InflowCenterId = Shader.PropertyToID("_InflowCenter");
         private static readonly int InflowRadiusId = Shader.PropertyToID("_InflowRadius");
         private static readonly int InflowRateId = Shader.PropertyToID("_InflowRate");
+        private static readonly int BlowCenterId = Shader.PropertyToID("_BlowCenter");
+        private static readonly int BlowRadiusId = Shader.PropertyToID("_BlowRadius");
+        private static readonly int BlowRateId = Shader.PropertyToID("_BlowRate");
         private static readonly int VolumeBalanceId = Shader.PropertyToID("_VolumeBalance");
         private static readonly int SinkFractionId = Shader.PropertyToID("_SinkFraction");
         private static readonly int SinkRetentionId = Shader.PropertyToID("_SinkRetention");
@@ -86,9 +89,13 @@ namespace LatteArt.Fluid
         private readonly RenderTexture _dyeBackward;
 
         private Vector2 _inflowCenter;
-        private float _inflowRadius = InactiveInflowRadius;
+        private float _inflowRadius = InactiveSourceRadius;
         private float _inflowRate;
         private float _inflowMass;
+        private Vector2 _blowCenter;
+        private float _blowRadius = InactiveSourceRadius;
+        private float _blowRate;
+        private float _blowMass;
         private float _sinkMass;
         private float _sinkRetention;
         private float _sunkMilkVolume;
@@ -185,8 +192,21 @@ namespace LatteArt.Fluid
 
         public void StopInflow()
         {
-            _inflowRadius = InactiveInflowRadius;
+            _inflowRadius = InactiveSourceRadius;
             _inflowRate = 0f;
+        }
+
+        public void SetBlow(Vector2 uv, float radius, float rate)
+        {
+            _blowCenter = uv;
+            _blowRadius = radius;
+            _blowRate = rate;
+        }
+
+        public void StopBlow()
+        {
+            _blowRadius = InactiveSourceRadius;
+            _blowRate = 0f;
         }
 
         public void Step(float deltaTime)
@@ -233,12 +253,17 @@ namespace LatteArt.Fluid
 
         private void ComputeDivergence(float deltaTime)
         {
-            _inflowMass = _inflowRate > 0f ? InflowMassInsideCup(CupRadius) : 0f;
+            _inflowMass = _inflowRate > 0f ? GaussianMassInsideCup(_inflowCenter, _inflowRadius) : 0f;
+            _blowMass = _blowRate > 0f ? GaussianMassInsideCup(_blowCenter, _blowRadius) : 0f;
             var sinkingRate = _sinkMass * (1f - _sinkRetention) / deltaTime;
-            var volumeBalance = (_inflowRate * _inflowMass - sinkingRate) / CupArea;
+            var addedRate = _inflowRate * _inflowMass + _blowRate * _blowMass;
+            var volumeBalance = (addedRate - sinkingRate) / CupArea;
             _shader.SetVector(InflowCenterId, _inflowCenter);
             _shader.SetFloat(InflowRadiusId, _inflowRadius);
             _shader.SetFloat(InflowRateId, _inflowRate);
+            _shader.SetVector(BlowCenterId, _blowCenter);
+            _shader.SetFloat(BlowRadiusId, _blowRadius);
+            _shader.SetFloat(BlowRateId, _blowRate);
             _shader.SetFloat(VolumeBalanceId, volumeBalance);
 
             _shader.SetTexture(_divergenceKernel, VelocityId, _velocity.Read);
@@ -248,25 +273,25 @@ namespace LatteArt.Fluid
             Dispatch(_divergenceKernel);
         }
 
-        private float InflowMassInsideCup(float cupRadius)
+        private float GaussianMassInsideCup(Vector2 center, float radius)
         {
-            var extent = _inflowRadius * InflowExtentInRadii;
-            var sampleSpacing = 2f * extent / InflowMassSamplesPerAxis;
-            var cupRadiusSquared = cupRadius * cupRadius;
-            var inflowRadiusSquared = _inflowRadius * _inflowRadius;
+            var extent = radius * SourceExtentInRadii;
+            var sampleSpacing = 2f * extent / SourceMassSamplesPerAxis;
+            var cupRadiusSquared = CupRadius * CupRadius;
+            var radiusSquared = radius * radius;
             var mass = 0f;
 
-            for (var y = 0; y < InflowMassSamplesPerAxis; y++)
+            for (var y = 0; y < SourceMassSamplesPerAxis; y++)
             {
-                for (var x = 0; x < InflowMassSamplesPerAxis; x++)
+                for (var x = 0; x < SourceMassSamplesPerAxis; x++)
                 {
                     var offset = new Vector2(
                         (x + 0.5f) * sampleSpacing - extent,
                         (y + 0.5f) * sampleSpacing - extent);
-                    var isInsideCup = (_inflowCenter + offset - CupCenterUv).sqrMagnitude < cupRadiusSquared;
+                    var isInsideCup = (center + offset - CupCenterUv).sqrMagnitude < cupRadiusSquared;
                     if (!isInsideCup) continue;
 
-                    mass += Mathf.Exp(-offset.sqrMagnitude / inflowRadiusSquared);
+                    mass += Mathf.Exp(-offset.sqrMagnitude / radiusSquared);
                 }
             }
 

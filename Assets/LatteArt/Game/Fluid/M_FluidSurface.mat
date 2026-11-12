@@ -37,6 +37,10 @@ Material:
     - _BrushWidth: 1.5
     - _BubbleWallSoftness: 0.5
     - _CoffeeDilution: 0
+    - _CremaBubbleCoverage: 0.56
+    - _CremaBubblePopRate: 0.19
+    - _CremaBubbleScale: 111
+    - _CremaBubbleStrength: 0.25
     - _CremaDrift: 0.03
     - _CremaRimDarkness: 0.197
     - _CremaRimWidth: 0.06
@@ -46,17 +50,19 @@ Material:
     - _EdgeSoftness: 0.4
     - _FoamPhase: 0
     - _FoamShadeSpread: 1.09
-    - _FoamShadeStrength: 0.121
+    - _FoamShadeStrength: 0.113
+    - _GrainCenterStrength: 0.042
+    - _GrainEdgeReach: 12
     - _GrainMaxStretch: 1.8
-    - _GrainScale: 97
-    - _GrainStrength: 0.007
+    - _GrainScale: 344
+    - _GrainStrength: 0.139
     - _HaloReach: 0.25
     - _RimWidth: 0.01
     m_Colors:
     - _BrushCenter: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _BrushColor: {r: 1, g: 1, b: 1, a: 0.6}
-    - _CoffeeColor: {r: 0.31132078, g: 0.21872698, b: 0.1541919, a: 1}
-    - _DilutedCoffeeColor: {r: 0.6886792, g: 0.6163742, b: 0.46453363, a: 1}
+    - _CoffeeColor: {r: 0.3137255, g: 0.20392157, b: 0.13725491, a: 1}
+    - _DilutedCoffeeColor: {r: 0.6509434, g: 0.5775164, b: 0.4267978, a: 1}
     - _HaloColor: {r: 0.62, g: 0.41999996, b: 0.24999997, a: 1}
     - _LightDirection: {r: -0.6, g: 0.8, b: 0, a: 0}
     - _MilkColor: {r: 0.96, g: 0.92, b: 0.8399999, a: 1}

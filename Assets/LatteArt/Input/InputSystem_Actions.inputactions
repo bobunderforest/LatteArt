@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -1039,6 +1040,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SelectSteamWand",
+                    "type": "Button",
+                    "id": "3df32560-76e7-4607-8352-16a0b8478b40",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1105,6 +1115,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SelectStraw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "479ccc69-575d-4e05-9e09-da80be94c242",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectSteamWand",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
