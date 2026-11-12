@@ -18,7 +18,8 @@ namespace LatteArt.Fluid
         private static readonly int TexelSizeId = Shader.PropertyToID("_TexelSize");
         private static readonly int CupRadiusId = Shader.PropertyToID("_CupRadius");
         private static readonly int DeltaTimeId = Shader.PropertyToID("_DeltaTime");
-        private static readonly int ForceCenterId = Shader.PropertyToID("_ForceCenter");
+        private static readonly int ForceFromId = Shader.PropertyToID("_ForceFrom");
+        private static readonly int ForceToId = Shader.PropertyToID("_ForceTo");
         private static readonly int ForceVelocityId = Shader.PropertyToID("_ForceVelocity");
         private static readonly int ForceRadiusId = Shader.PropertyToID("_ForceRadius");
         private static readonly int StirFromId = Shader.PropertyToID("_StirFrom");
@@ -27,18 +28,23 @@ namespace LatteArt.Fluid
         private static readonly int StirRadiusId = Shader.PropertyToID("_StirRadius");
         private static readonly int StirCouplingId = Shader.PropertyToID("_StirCoupling");
         private static readonly int StirRetentionId = Shader.PropertyToID("_StirRetention");
-        private static readonly int MilkCenterId = Shader.PropertyToID("_MilkCenter");
+        private static readonly int MilkFromId = Shader.PropertyToID("_MilkFrom");
+        private static readonly int MilkToId = Shader.PropertyToID("_MilkTo");
         private static readonly int MilkRadiusId = Shader.PropertyToID("_MilkRadius");
         private static readonly int InflowCenterId = Shader.PropertyToID("_InflowCenter");
         private static readonly int InflowRadiusId = Shader.PropertyToID("_InflowRadius");
         private static readonly int InflowRateId = Shader.PropertyToID("_InflowRate");
-        private static readonly int InflowSinkId = Shader.PropertyToID("_InflowSink");
+        private static readonly int VolumeBalanceId = Shader.PropertyToID("_VolumeBalance");
+        private static readonly int SinkFractionId = Shader.PropertyToID("_SinkFraction");
+        private static readonly int SinkRetentionId = Shader.PropertyToID("_SinkRetention");
         private static readonly int VelocityDampingId = Shader.PropertyToID("_VelocityDamping");
         private static readonly int AdvectionSignId = Shader.PropertyToID("_AdvectionSign");
         private static readonly int VelocityId = Shader.PropertyToID("_Velocity");
         private static readonly int VelocityOutId = Shader.PropertyToID("_VelocityOut");
         private static readonly int StirId = Shader.PropertyToID("_Stir");
         private static readonly int StirOutId = Shader.PropertyToID("_StirOut");
+        private static readonly int SinkId = Shader.PropertyToID("_Sink");
+        private static readonly int SinkOutId = Shader.PropertyToID("_SinkOut");
         private static readonly int DyeId = Shader.PropertyToID("_Dye");
         private static readonly int DyeForwardId = Shader.PropertyToID("_DyeForward");
         private static readonly int DyeBackwardId = Shader.PropertyToID("_DyeBackward");
@@ -62,10 +68,12 @@ namespace LatteArt.Fluid
         private readonly int _subtractGradientKernel;
         private readonly int _advectVelocityKernel;
         private readonly int _advectDyeKernel;
+        private readonly int _advectSinkKernel;
         private readonly int _correctDyeKernel;
 
         private readonly PingPongTexture _velocity;
         private readonly PingPongTexture _stir;
+        private readonly PingPongTexture _sink;
         private readonly PingPongTexture _dye;
         private readonly PingPongTexture _pressure;
         private readonly RenderTexture _divergence;
@@ -75,6 +83,9 @@ namespace LatteArt.Fluid
         private Vector2 _inflowCenter;
         private float _inflowRadius = InactiveInflowRadius;
         private float _inflowRate;
+        private float _inflowMass;
+        private float _sinkMass;
+        private float _sinkRetention;
 
         public FluidSimulation(ComputeShader shader, FluidSettings settings)
         {
@@ -92,10 +103,12 @@ namespace LatteArt.Fluid
             _subtractGradientKernel = shader.FindKernel("SubtractGradient");
             _advectVelocityKernel = shader.FindKernel("AdvectVelocity");
             _advectDyeKernel = shader.FindKernel("AdvectDye");
+            _advectSinkKernel = shader.FindKernel("AdvectSink");
             _correctDyeKernel = shader.FindKernel("CorrectDye");
 
             _velocity = new PingPongTexture(_resolution, GraphicsFormat.R16G16_SFloat, "FluidVelocity");
             _stir = new PingPongTexture(_resolution, GraphicsFormat.R16G16_SFloat, "FluidStir");
+            _sink = new PingPongTexture(_resolution, GraphicsFormat.R32_SFloat, "FluidSink");
             _dye = new PingPongTexture(_resolution, GraphicsFormat.R16_SFloat, "FluidDye");
             _pressure = new PingPongTexture(_resolution, GraphicsFormat.R32_SFloat, "FluidPressure");
             _divergence = FluidTexture.Create(_resolution, GraphicsFormat.R32_SFloat, "FluidDivergence");
@@ -106,10 +119,11 @@ namespace LatteArt.Fluid
         public RenderTexture Dye => _dye.Read;
         public float CupRadius => Mathf.Min(_settings.CupRadius, 0.5f - GridMarginTexels / _resolution);
 
-        public void AddForce(Vector2 uv, Vector2 velocity, float radius)
+        public void AddForce(Vector2 fromUv, Vector2 toUv, Vector2 velocity, float radius)
         {
             SetGridParameters();
-            _shader.SetVector(ForceCenterId, uv);
+            _shader.SetVector(ForceFromId, fromUv);
+            _shader.SetVector(ForceToId, toUv);
             _shader.SetVector(ForceVelocityId, velocity);
             _shader.SetFloat(ForceRadiusId, radius);
 
@@ -134,10 +148,11 @@ namespace LatteArt.Fluid
             _stir.Swap();
         }
 
-        public void InjectMilk(Vector2 uv, float radius)
+        public void InjectMilk(Vector2 fromUv, Vector2 toUv, float radius)
         {
             SetGridParameters();
-            _shader.SetVector(MilkCenterId, uv);
+            _shader.SetVector(MilkFromId, fromUv);
+            _shader.SetVector(MilkToId, toUv);
             _shader.SetFloat(MilkRadiusId, radius);
 
             _shader.SetTexture(_injectMilkKernel, DyeId, _dye.Read);
@@ -163,9 +178,12 @@ namespace LatteArt.Fluid
         {
             SetGridParameters();
             _shader.SetFloat(DeltaTimeId, deltaTime);
+            _sinkRetention = Mathf.Exp(-deltaTime / _settings.MilkSinkTime);
+            _shader.SetFloat(SinkRetentionId, _sinkRetention);
 
-            ProjectVelocity();
+            ProjectVelocity(deltaTime);
             AdvectDye();
+            AdvectSink(deltaTime);
             AdvectVelocity();
             SettleStir(deltaTime);
         }
@@ -174,6 +192,7 @@ namespace LatteArt.Fluid
         {
             _velocity.Dispose();
             _stir.Dispose();
+            _sink.Dispose();
             _dye.Dispose();
             _pressure.Dispose();
             FluidTexture.Release(_divergence);
@@ -188,25 +207,28 @@ namespace LatteArt.Fluid
             _shader.SetFloat(CupRadiusId, CupRadius);
         }
 
-        private void ProjectVelocity()
+        private void ProjectVelocity(float deltaTime)
         {
-            ComputeDivergence();
+            ComputeDivergence(deltaTime);
             SolvePressure();
             SubtractPressureGradient();
         }
 
-        private void ComputeDivergence()
+        private void ComputeDivergence(float deltaTime)
         {
             var cupRadius = CupRadius;
             var cupArea = Mathf.PI * cupRadius * cupRadius;
-            var inflowSink = _inflowRate > 0f ? _inflowRate * InflowMassInsideCup(cupRadius) / cupArea : 0f;
+            _inflowMass = _inflowRate > 0f ? InflowMassInsideCup(cupRadius) : 0f;
+            var sinkingRate = _sinkMass * (1f - _sinkRetention) / deltaTime;
+            var volumeBalance = (_inflowRate * _inflowMass - sinkingRate) / cupArea;
             _shader.SetVector(InflowCenterId, _inflowCenter);
             _shader.SetFloat(InflowRadiusId, _inflowRadius);
             _shader.SetFloat(InflowRateId, _inflowRate);
-            _shader.SetFloat(InflowSinkId, inflowSink);
+            _shader.SetFloat(VolumeBalanceId, volumeBalance);
 
             _shader.SetTexture(_divergenceKernel, VelocityId, _velocity.Read);
             _shader.SetTexture(_divergenceKernel, StirId, _stir.Read);
+            _shader.SetTexture(_divergenceKernel, SinkId, _sink.Read);
             _shader.SetTexture(_divergenceKernel, DivergenceOutId, _divergence);
             Dispatch(_divergenceKernel);
         }
@@ -281,6 +303,20 @@ namespace LatteArt.Fluid
             _shader.SetTexture(_advectDyeKernel, DyeId, source);
             _shader.SetTexture(_advectDyeKernel, DyeOutId, destination);
             Dispatch(_advectDyeKernel);
+        }
+
+        private void AdvectSink(float deltaTime)
+        {
+            var sinkFraction = _settings.MilkSinkFraction;
+            _shader.SetFloat(SinkFractionId, sinkFraction);
+            _shader.SetTexture(_advectSinkKernel, VelocityId, _velocity.Read);
+            _shader.SetTexture(_advectSinkKernel, StirId, _stir.Read);
+            _shader.SetTexture(_advectSinkKernel, SinkId, _sink.Read);
+            _shader.SetTexture(_advectSinkKernel, SinkOutId, _sink.Write);
+            Dispatch(_advectSinkKernel);
+            _sink.Swap();
+
+            _sinkMass = _sinkMass * _sinkRetention + sinkFraction * _inflowRate * _inflowMass * deltaTime;
         }
 
         private void AdvectVelocity()

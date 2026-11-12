@@ -20,6 +20,8 @@ namespace LatteArt.Pour
         private readonly PointerMotion _pointerMotion = new();
         private bool _hasValidSetup;
         private ToolRadius _streamRadius;
+        private StreamGrowth _streamGrowth;
+        private Vector2 _streamUv;
 
         private void Awake()
         {
@@ -31,6 +33,11 @@ namespace LatteArt.Pour
                 settings.MinStreamRadius,
                 settings.MaxStreamRadius,
                 settings.ResizeFactorPerScroll);
+            _streamGrowth = new StreamGrowth(
+                settings.StartRadius,
+                settings.GrowSpeed,
+                settings.GrowEaseTime,
+                settings.TaperTime);
         }
 
         private void OnEnable()
@@ -41,6 +48,7 @@ namespace LatteArt.Pour
         private void OnDisable()
         {
             _pointerMotion.Reset();
+            _streamGrowth?.Stop();
             if (surface == null) return;
 
             surface.HideBrush();
@@ -58,6 +66,7 @@ namespace LatteArt.Pour
             if (!surface.TryGetSurfaceUv(pointerRay, out var pointerUv))
             {
                 _pointerMotion.Reset();
+                _streamGrowth.Stop();
                 surface.HideBrush();
                 simulation.StopInflow();
                 return;
@@ -67,13 +76,19 @@ namespace LatteArt.Pour
             _pointerMotion.MoveTo(pointerUv, deltaTime);
             surface.ShowBrush(pointerUv, _streamRadius.Radius);
 
-            if (!pourAction.action.IsPressed())
+            var wasFlowing = _streamGrowth.IsFlowing;
+            if (pourAction.action.IsPressed()) _streamGrowth.Grow(_streamRadius.Radius, deltaTime);
+            else _streamGrowth.Taper(deltaTime);
+
+            if (!_streamGrowth.IsFlowing)
             {
                 simulation.StopInflow();
                 return;
             }
 
-            Pour(simulation, pointerUv, _pointerMotion.Velocity, deltaTime);
+            var previousStreamUv = wasFlowing ? _streamUv : pointerUv;
+            _streamUv = pointerUv;
+            Pour(simulation, previousStreamUv, _streamUv, _pointerMotion.Velocity, deltaTime);
         }
 
         private bool HasValidSetup()
@@ -88,14 +103,16 @@ namespace LatteArt.Pour
             return false;
         }
 
-        private void Pour(FluidSimulation simulation, Vector2 uv, Vector2 pitcherVelocity, float deltaTime)
+        private void Pour(
+            FluidSimulation simulation, Vector2 fromUv, Vector2 toUv, Vector2 pitcherVelocity, float deltaTime)
         {
-            var radius = _streamRadius.Radius;
-            var dragImpulse = pitcherVelocity * (settings.DragStrength * deltaTime);
+            var radius = _streamGrowth.Radius;
+            var speedFactor = Mathf.Clamp01(pitcherVelocity.magnitude / settings.FullDragSpeed);
+            var dragImpulse = pitcherVelocity * (settings.DragStrength * speedFactor * deltaTime);
 
-            simulation.SetInflow(uv, radius, settings.InflowRate);
-            simulation.InjectMilk(uv, radius);
-            simulation.AddForce(uv, dragImpulse, radius);
+            simulation.SetInflow(toUv, radius, settings.InflowRate);
+            simulation.InjectMilk(fromUv, toUv, radius);
+            simulation.AddForce(fromUv, toUv, dragImpulse, radius);
         }
     }
 }

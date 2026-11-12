@@ -17,4 +17,7 @@ MonoBehaviour:
   stepsPerSecond: 60
   maxStepsPerFrame: 4
   pressureIterations: 50
-  velocityDamping: 2.5
+  velocityDamping: 4
+  stirSettleTime: 0.15
+  milkSinkFraction: 0.6
+  milkSinkTime: 0.4

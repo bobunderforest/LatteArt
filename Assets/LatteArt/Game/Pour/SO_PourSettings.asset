@@ -16,5 +16,10 @@ MonoBehaviour:
   minStreamRadius: 0.01
   maxStreamRadius: 0.12
   resizeFactorPerScroll: 1.15
+  startRadius: 0.01
+  growSpeed: 0.25
+  growEaseTime: 0.03
+  taperTime: 0.15
   inflowRate: 8
-  dragStrength: 5
+  dragStrength: 30
+  fullDragSpeed: 1

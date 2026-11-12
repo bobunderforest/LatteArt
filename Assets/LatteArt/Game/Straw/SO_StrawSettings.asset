@@ -16,6 +16,6 @@ MonoBehaviour:
   minStirRadius: 0.004
   maxStirRadius: 0.04
   resizeFactorPerScroll: 1.15
-  fluidFollow: 0.88
-  grabTime: 0.02
+  fluidFollow: 0.75
+  grabTime: 0.015
   followTime: 0.015

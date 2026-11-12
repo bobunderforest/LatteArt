@@ -7,6 +7,7 @@
 #pragma kernel SubtractGradient
 #pragma kernel AdvectVelocity
 #pragma kernel AdvectDye
+#pragma kernel AdvectSink
 #pragma kernel CorrectDye
 
 #define THREAD_GROUP_SIZE 8
@@ -23,7 +24,8 @@ float _DeltaTime;
 
 static const float MilkEdgeTexels = 1.5;
 
-float2 _ForceCenter;
+float2 _ForceFrom;
+float2 _ForceTo;
 float2 _ForceVelocity;
 float _ForceRadius;
 
@@ -34,13 +36,17 @@ float _StirRadius;
 float _StirCoupling;
 float _StirRetention;
 
-float2 _MilkCenter;
+float2 _MilkFrom;
+float2 _MilkTo;
 float _MilkRadius;
 
 float2 _InflowCenter;
 float _InflowRadius;
 float _InflowRate;
-float _InflowSink;
+float _VolumeBalance;
+
+float _SinkFraction;
+float _SinkRetention;
 
 float _VelocityDamping;
 float _AdvectionSign;
@@ -51,6 +57,8 @@ Texture2D<float2> _Velocity;
 RWTexture2D<float2> _VelocityOut;
 Texture2D<float2> _Stir;
 RWTexture2D<float2> _StirOut;
+Texture2D<float> _Sink;
+RWTexture2D<float> _SinkOut;
 Texture2D<float> _Dye;
 Texture2D<float> _DyeForward;
 Texture2D<float> _DyeBackward;
@@ -83,6 +91,11 @@ float Gaussian(float2 offset, float radius)
 float2 FlowVelocity(int2 cell)
 {
     return _Velocity[cell] + _Stir[cell];
+}
+
+float InflowProfile(int2 cell)
+{
+    return _InflowRate * Gaussian(CellUv(cell) - _InflowCenter, _InflowRadius);
 }
 
 float NeighborPressure(int2 neighbor, float centerPressure)
@@ -130,7 +143,9 @@ void AddForce(uint3 id : SV_DispatchThreadID)
         return;
     }
 
-    float falloff = Gaussian(CellUv(cell) - _ForceCenter, _ForceRadius);
+    float2 uv = CellUv(cell);
+    float2 closestOnPath = ClosestPointOnSegment(uv, _ForceFrom, _ForceTo);
+    float falloff = Gaussian(uv - closestOnPath, _ForceRadius);
     _VelocityOut[cell] = _Velocity[cell] + _ForceVelocity * falloff;
 }
 
@@ -177,7 +192,8 @@ void InjectMilk(uint3 id : SV_DispatchThreadID)
     }
 
     float edgeWidth = MilkEdgeTexels * _TexelSize;
-    float distanceFromStream = distance(CellUv(cell), _MilkCenter);
+    float2 uv = CellUv(cell);
+    float distanceFromStream = distance(uv, ClosestPointOnSegment(uv, _MilkFrom, _MilkTo));
     float stream = 1 - smoothstep(_MilkRadius - edgeWidth, _MilkRadius, distanceFromStream);
     _DyeOut[cell] = max(_Dye[cell], stream);
 }
@@ -196,8 +212,9 @@ void Divergence(uint3 id : SV_DispatchThreadID)
     float dVxDx = FlowVelocity(cell + Right).x - FlowVelocity(cell + Left).x;
     float dVyDy = FlowVelocity(cell + Up).y - FlowVelocity(cell + Down).y;
     float velocityDivergence = (dVxDx + dVyDy) * 0.5 / _TexelSize;
-    float inflow = _InflowRate * Gaussian(CellUv(cell) - _InflowCenter, _InflowRadius) - _InflowSink;
-    _DivergenceOut[cell] = velocityDivergence - inflow;
+    float sinking = _Sink[cell] * (1 - _SinkRetention) / _DeltaTime;
+    float surfaceSource = InflowProfile(cell) - sinking - _VolumeBalance;
+    _DivergenceOut[cell] = velocityDivergence - surfaceSource;
 }
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
@@ -268,6 +285,23 @@ void AdvectDye(uint3 id : SV_DispatchThreadID)
 
     float2 departure = CellUv(cell) - _AdvectionSign * _DeltaTime * FlowVelocity(cell);
     _DyeOut[cell] = _Dye.SampleLevel(linearClampSampler, departure, 0);
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void AdvectSink(uint3 id : SV_DispatchThreadID)
+{
+    int2 cell = id.xy;
+    if (IsOutsideGrid(id.xy)) return;
+    if (!IsFluid(cell))
+    {
+        _SinkOut[cell] = 0;
+        return;
+    }
+
+    float2 departure = CellUv(cell) - _DeltaTime * FlowVelocity(cell);
+    float remaining = _Sink.SampleLevel(linearClampSampler, departure, 0) * _SinkRetention;
+    float deposited = _SinkFraction * InflowProfile(cell) * _DeltaTime;
+    _SinkOut[cell] = remaining + deposited;
 }
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]

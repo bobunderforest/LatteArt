@@ -32,7 +32,8 @@ Material:
     - _BrushRadius: 0
     - _BrushWidth: 1.5
     - _CupRadius: 0.48
-    - _EdgeSoftness: 0.383
+    - _EdgeSoftness: 0.4
+    - _RimWidth: 0.01
     m_Colors:
     - _BrushCenter: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _BrushColor: {r: 1, g: 1, b: 1, a: 0.6}
