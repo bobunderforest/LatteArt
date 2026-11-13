@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_FluidSky
+  m_Shader: {fileID: 4800000, guid: f143951b970c5b544abccf7b089f6d9e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _BubbleCoverage: 1
+    - _BubblePopRate: 2
+    - _BubbleScale: 58
+    - _BubbleStrength: 0.297
+    - _BubbleWallSoftness: 0.5
+    - _CremaScale: 17.8
+    - _CremaStrength: 0.15
+    - _EdgeSoftness: 0.2
+    - _FlowScale: 3.05
+    - _FlowSpeed: 0.0025
+    - _FlowStrength: 0.51
+    - _FoldStrength: 0.604
+    - _GrainScale: 321
+    - _GrainStrength: 0.118
+    - _HaloWidth: 0.5
+    - _LineBreakup: 0.6
+    - _LineFrequency: 1.71
+    - _LineInfluence: 0.28
+    - _LineWidth: 0.35
+    - _MilkCoverage: -0.158
+    - _RegionScale: 3.15
+    - _SpiralArms: 3
+    - _StarDensity: 0.0747
+    - _StarScale: 95
+    - _StarSize: 0.366
+    - _StarTwinkleSpeed: 1.35
+    - _VortexPulse: 0.038
+    - _VortexRadius: 0.58
+    - _VortexStrength: 1.87
+    m_Colors:
+    - _CoffeeColor: {r: 0.059999965, g: 0.03, b: 0.02, a: 1}
+    - _HaloColor: {r: 0.254717, g: 0.13083746, b: 0.06608225, a: 1}
+    - _MilkColor: {r: 0.7924528, g: 0.7334079, b: 0.63171947, a: 1}
+    - _StarColor: {r: 1, g: 0.95, b: 0.85, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &1005256488704667252
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
