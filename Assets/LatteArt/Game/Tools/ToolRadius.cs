@@ -18,12 +18,9 @@ namespace LatteArt.Tools
 
         public float Radius { get; private set; }
 
-        public void Resize(float scrollDelta)
+        public void Resize(float scrollNotches)
         {
-            if (Mathf.Approximately(scrollDelta, 0f)) return;
-
-            var factor = scrollDelta > 0f ? _resizeFactor : 1f / _resizeFactor;
-            Radius = Mathf.Clamp(Radius * factor, _minRadius, _maxRadius);
+            Radius = Mathf.Clamp(Radius * Mathf.Pow(_resizeFactor, scrollNotches), _minRadius, _maxRadius);
         }
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LatteArt.Pour
+namespace LatteArt.Tools
 {
     public sealed class StreamGrowth
     {

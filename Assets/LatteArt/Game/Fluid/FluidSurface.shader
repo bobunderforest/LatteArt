@@ -31,6 +31,7 @@ Shader "LatteArt/FluidSurface"
         [NoScaleOffset] _DyeTex ("Dye", 2D) = "black" {}
         [NoScaleOffset] _FoamCoordsTex ("Foam Coords", 2D) = "black" {}
         [HideInInspector] _FoamPhase ("Foam Phase", Float) = 0
+        [HideInInspector] _SimulationTexelSize ("Simulation Texel Size", Float) = 0.001953125
         _CupRadius ("Cup Radius", Range(0.1, 0.5)) = 0.48
         _BrushColor ("Brush Color", Color) = (1, 1, 1, 0.6)
         _BrushWidth ("Brush Width (px)", Range(0.5, 4)) = 1.5
@@ -100,6 +101,7 @@ Shader "LatteArt/FluidSurface"
                 half _GrainMaxStretch;
                 half _BubbleWallSoftness;
                 float _FoamPhase;
+                float _SimulationTexelSize;
                 half _FoamShadeStrength;
                 float _FoamShadeSpread;
                 float4 _LightDirection;
@@ -244,15 +246,11 @@ Shader "LatteArt/FluidSurface"
 
             CarriedFoam SampleCarriedFoam(float2 uv)
             {
-                float width;
-                float height;
-                _FoamCoordsTex.GetDimensions(width, height);
-                float2 texel = 1 / float2(width, height);
-
-                float4 coordsChangeAlongX = (SampleFoamCoords(uv + float2(texel.x, 0)) -
-                    SampleFoamCoords(uv - float2(texel.x, 0))) / (2 * texel.x);
-                float4 coordsChangeAlongY = (SampleFoamCoords(uv + float2(0, texel.y)) -
-                    SampleFoamCoords(uv - float2(0, texel.y))) / (2 * texel.y);
+                float texel = _SimulationTexelSize;
+                float4 coordsChangeAlongX = (SampleFoamCoords(uv + float2(texel, 0)) -
+                    SampleFoamCoords(uv - float2(texel, 0))) / (2 * texel);
+                float4 coordsChangeAlongY = (SampleFoamCoords(uv + float2(0, texel)) -
+                    SampleFoamCoords(uv - float2(0, texel))) / (2 * texel);
 
                 float firstPhaseWeight = 1 - abs(2 * _FoamPhase - 1);
                 float secondPhaseWeight = 1 - firstPhaseWeight;
@@ -276,10 +274,7 @@ Shader "LatteArt/FluidSurface"
 
             half MilkEdgeness(float2 uv)
             {
-                float width;
-                float height;
-                _DyeTex.GetDimensions(width, height);
-                float2 reach = _GrainEdgeReach / float2(width, height);
+                float reach = _GrainEdgeReach * _SimulationTexelSize;
 
                 float surroundingDye = 0;
                 [unroll]
@@ -335,14 +330,11 @@ Shader "LatteArt/FluidSurface"
 
             half FoamLight(float2 uv)
             {
-                float width;
-                float height;
-                _DyeTex.GetDimensions(width, height);
-                float2 offset = _FoamShadeSpread / float2(width, height);
+                float offset = _FoamShadeSpread * _SimulationTexelSize;
 
                 float2 foamSlope = float2(
-                    SampleDye(uv + float2(offset.x, 0)) - SampleDye(uv - float2(offset.x, 0)),
-                    SampleDye(uv + float2(0, offset.y)) - SampleDye(uv - float2(0, offset.y)));
+                    SampleDye(uv + float2(offset, 0)) - SampleDye(uv - float2(offset, 0)),
+                    SampleDye(uv + float2(0, offset)) - SampleDye(uv - float2(0, offset)));
                 float2 towardLight = normalize(_LightDirection.xy);
                 return -dot(foamSlope, towardLight) * _FoamShadeStrength;
             }

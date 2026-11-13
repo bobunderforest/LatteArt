@@ -3,7 +3,9 @@
 #pragma kernel SettleStir
 #pragma kernel InjectMilk
 #pragma kernel Divergence
-#pragma kernel Jacobi
+#pragma kernel SumDivergence
+#pragma kernel TotalDivergence
+#pragma kernel RelaxPressure
 #pragma kernel SubtractGradient
 #pragma kernel AdvectVelocity
 #pragma kernel AdvectDye
@@ -12,18 +14,20 @@
 #pragma kernel AdvectFoamCoords
 
 #define THREAD_GROUP_SIZE 8
+#define REDUCTION_GROUP_SIZE (THREAD_GROUP_SIZE * THREAD_GROUP_SIZE)
 
 static const int2 Left = int2(-1, 0);
 static const int2 Right = int2(1, 0);
 static const int2 Down = int2(0, -1);
 static const int2 Up = int2(0, 1);
+static const float MilkEdgeTexels = 1.5;
 
 uint _Resolution;
+uint _ThreadGroupCount;
+uint _PartialSumCount;
 float _TexelSize;
 float _CupRadius;
 float _DeltaTime;
-
-static const float MilkEdgeTexels = 1.5;
 
 float2 _ForceFrom;
 float2 _ForceTo;
@@ -47,7 +51,6 @@ float _InflowRate;
 float2 _BlowCenter;
 float _BlowRadius;
 float _BlowRate;
-float _VolumeBalance;
 
 float _SinkFraction;
 float _SinkRetention;
@@ -56,6 +59,9 @@ float2 _FoamResetMask;
 
 float _VelocityDamping;
 float _AdvectionSign;
+
+uint _RedBlackParity;
+float _RelaxationWeight;
 
 SamplerState linearClampSampler;
 
@@ -72,9 +78,15 @@ Texture2D<float> _DyeForward;
 Texture2D<float> _DyeBackward;
 RWTexture2D<float> _DyeOut;
 Texture2D<float> _Pressure;
-RWTexture2D<float> _PressureOut;
+RWTexture2D<float> _PressureInOut;
 Texture2D<float> _Divergence;
 RWTexture2D<float> _DivergenceOut;
+StructuredBuffer<float2> _PartialSums;
+RWStructuredBuffer<float2> _PartialSumsOut;
+StructuredBuffer<float2> _DivergenceTotal;
+RWStructuredBuffer<float2> _DivergenceTotalOut;
+
+groupshared float2 GroupSums[REDUCTION_GROUP_SIZE];
 
 bool IsOutsideGrid(uint2 cell)
 {
@@ -111,9 +123,30 @@ float BlowProfile(int2 cell)
     return _BlowRate * Gaussian(CellUv(cell) - _BlowCenter, _BlowRadius);
 }
 
+float MeanDivergence()
+{
+    float2 total = _DivergenceTotal[0];
+    return total.x / max(total.y, 1);
+}
+
+void ReduceGroupSums(uint groupIndex)
+{
+    GroupMemoryBarrierWithGroupSync();
+    for (uint stride = REDUCTION_GROUP_SIZE / 2; stride > 0; stride /= 2)
+    {
+        if (groupIndex < stride) GroupSums[groupIndex] += GroupSums[groupIndex + stride];
+        GroupMemoryBarrierWithGroupSync();
+    }
+}
+
 float NeighborPressure(int2 neighbor, float centerPressure)
 {
     return IsFluid(neighbor) ? _Pressure[neighbor] : centerPressure;
+}
+
+float RelaxingNeighborPressure(int2 neighbor, float centerPressure)
+{
+    return IsFluid(neighbor) ? _PressureInOut[neighbor] : centerPressure;
 }
 
 float2 BlockFlowIntoWalls(int2 cell, float2 velocity)
@@ -226,28 +259,57 @@ void Divergence(uint3 id : SV_DispatchThreadID)
     float dVyDy = FlowVelocity(cell + Up).y - FlowVelocity(cell + Down).y;
     float velocityDivergence = (dVxDx + dVyDy) * 0.5 / _TexelSize;
     float sinking = _Sink[cell] * (1 - _SinkRetention) / _DeltaTime;
-    float surfaceSource = InflowProfile(cell) + BlowProfile(cell) - sinking - _VolumeBalance;
+    float surfaceSource = InflowProfile(cell) + BlowProfile(cell) - sinking;
     _DivergenceOut[cell] = velocityDivergence - surfaceSource;
 }
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
-void Jacobi(uint3 id : SV_DispatchThreadID)
+void SumDivergence(uint3 id : SV_DispatchThreadID, uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     int2 cell = id.xy;
-    if (IsOutsideGrid(id.xy)) return;
+    bool isFluidCell = !IsOutsideGrid(id.xy) && IsFluid(cell);
+    GroupSums[groupIndex] = isFluidCell ? float2(_Divergence[cell], 1) : 0;
+    ReduceGroupSums(groupIndex);
+
+    if (groupIndex == 0) _PartialSumsOut[groupId.y * _ThreadGroupCount + groupId.x] = GroupSums[0];
+}
+
+[numthreads(REDUCTION_GROUP_SIZE, 1, 1)]
+void TotalDivergence(uint groupIndex : SV_GroupIndex)
+{
+    float2 sum = 0;
+    for (uint i = groupIndex; i < _PartialSumCount; i += REDUCTION_GROUP_SIZE)
+    {
+        sum += _PartialSums[i];
+    }
+
+    GroupSums[groupIndex] = sum;
+    ReduceGroupSums(groupIndex);
+
+    if (groupIndex == 0) _DivergenceTotalOut[0] = GroupSums[0];
+}
+
+[numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
+void RelaxPressure(uint3 id : SV_DispatchThreadID)
+{
+    uint2 colorCell = uint2(id.x * 2 + ((id.y + _RedBlackParity) & 1), id.y);
+    int2 cell = colorCell;
+    if (IsOutsideGrid(colorCell)) return;
     if (!IsFluid(cell))
     {
-        _PressureOut[cell] = 0;
+        _PressureInOut[cell] = 0;
         return;
     }
 
-    float center = _Pressure[cell];
+    float center = _PressureInOut[cell];
     float neighborSum =
-        NeighborPressure(cell + Left, center) +
-        NeighborPressure(cell + Right, center) +
-        NeighborPressure(cell + Down, center) +
-        NeighborPressure(cell + Up, center);
-    _PressureOut[cell] = (neighborSum - _Divergence[cell] * _TexelSize * _TexelSize) * 0.25;
+        RelaxingNeighborPressure(cell + Left, center) +
+        RelaxingNeighborPressure(cell + Right, center) +
+        RelaxingNeighborPressure(cell + Down, center) +
+        RelaxingNeighborPressure(cell + Up, center);
+    float balancedDivergence = _Divergence[cell] - MeanDivergence();
+    float gaussSeidel = (neighborSum - balancedDivergence * _TexelSize * _TexelSize) * 0.25;
+    _PressureInOut[cell] = lerp(center, gaussSeidel, _RelaxationWeight);
 }
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]

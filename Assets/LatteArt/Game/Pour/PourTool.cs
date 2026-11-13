@@ -19,7 +19,7 @@ namespace LatteArt.Pour
 
         private readonly PointerMotion _pointerMotion = new();
         private bool _hasValidSetup;
-        private ToolRadius _streamRadius;
+        private SurfacePointer _pointer;
         private StreamGrowth _streamGrowth;
         private Vector2 _streamUv;
 
@@ -28,16 +28,9 @@ namespace LatteArt.Pour
             _hasValidSetup = HasValidSetup();
             if (!_hasValidSetup) return;
 
-            _streamRadius = new ToolRadius(
-                settings.StreamRadius,
-                settings.MinStreamRadius,
-                settings.MaxStreamRadius,
-                settings.ResizeFactorPerScroll);
-            _streamGrowth = new StreamGrowth(
-                settings.StartRadius,
-                settings.GrowSpeed,
-                settings.GrowEaseTime,
-                settings.TaperTime);
+            _pointer = new SurfacePointer(
+                surface, viewCamera, pointAction.action, resizeStreamAction.action, settings.Stream.CreateRadius());
+            _streamGrowth = settings.Stream.CreateGrowth();
         }
 
         private void OnEnable()
@@ -60,24 +53,22 @@ namespace LatteArt.Pour
             var simulation = surface.Simulation;
             if (simulation == null) return;
 
-            _streamRadius.Resize(resizeStreamAction.action.ReadValue<float>());
-
-            var pointerRay = viewCamera.ScreenPointToRay(pointAction.action.ReadValue<Vector2>());
-            if (!surface.TryGetSurfaceUv(pointerRay, out var pointerUv))
+            _pointer.ResizeFromScroll();
+            if (!_pointer.TryGetSurfaceUv(out var pointerUv))
             {
                 _pointerMotion.Reset();
                 _streamGrowth.Stop();
-                surface.HideBrush();
+                _pointer.HideBrush();
                 simulation.StopInflow();
                 return;
             }
 
             var deltaTime = Time.deltaTime;
             _pointerMotion.MoveTo(pointerUv, deltaTime);
-            surface.ShowBrush(pointerUv, _streamRadius.Radius);
+            _pointer.ShowBrush(pointerUv);
 
             var wasFlowing = _streamGrowth.IsFlowing;
-            if (pourAction.action.IsPressed()) _streamGrowth.Grow(_streamRadius.Radius, deltaTime);
+            if (pourAction.action.IsPressed()) _streamGrowth.Grow(_pointer.Radius, deltaTime);
             else _streamGrowth.Taper(deltaTime);
 
             if (!_streamGrowth.IsFlowing)

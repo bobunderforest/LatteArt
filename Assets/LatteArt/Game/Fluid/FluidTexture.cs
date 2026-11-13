@@ -19,6 +19,11 @@ namespace LatteArt.Fluid
             return texture;
         }
 
+        public static GraphicsFormat FilterableFormat(GraphicsFormat preferred, GraphicsFormat fallback)
+        {
+            return SystemInfo.IsFormatSupported(preferred, GraphicsFormatUsage.Linear) ? preferred : fallback;
+        }
+
         public static void Release(RenderTexture texture)
         {
             texture.Release();

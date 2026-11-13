@@ -39,11 +39,11 @@ namespace LatteArt.Tests.EditMode
         }
 
         [Test]
-        public void Resize_ScrollAmount_UsesOnlyDirection()
+        public void Resize_PartialNotches_AddUpToWholeNotch()
         {
             var radius = new ToolRadius(0.02f, MinRadius, MaxRadius, ResizeFactor);
 
-            radius.Resize(120f);
+            for (var i = 0; i < 4; i++) radius.Resize(0.25f);
 
             Assert.That(radius.Radius, Is.EqualTo(0.04f).Within(Tolerance));
         }

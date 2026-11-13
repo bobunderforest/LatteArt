@@ -1,5 +1,4 @@
 using LatteArt.Fluid;
-using LatteArt.Pour;
 using LatteArt.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,7 +18,7 @@ namespace LatteArt.SteamWand
         [SerializeField] private InputActionReference resizeAction;
 
         private bool _hasValidSetup;
-        private ToolRadius _blowRadius;
+        private SurfacePointer _pointer;
         private StreamGrowth _blowGrowth;
 
         private void Awake()
@@ -27,16 +26,9 @@ namespace LatteArt.SteamWand
             _hasValidSetup = HasValidSetup();
             if (!_hasValidSetup) return;
 
-            _blowRadius = new ToolRadius(
-                settings.BlowRadius,
-                settings.MinBlowRadius,
-                settings.MaxBlowRadius,
-                settings.ResizeFactorPerScroll);
-            _blowGrowth = new StreamGrowth(
-                settings.StartRadius,
-                settings.GrowSpeed,
-                settings.GrowEaseTime,
-                settings.TaperTime);
+            _pointer = new SurfacePointer(
+                surface, viewCamera, pointAction.action, resizeAction.action, settings.BlowStream.CreateRadius());
+            _blowGrowth = settings.BlowStream.CreateGrowth();
         }
 
         private void OnEnable()
@@ -58,20 +50,18 @@ namespace LatteArt.SteamWand
             var simulation = surface.Simulation;
             if (simulation == null) return;
 
-            _blowRadius.Resize(resizeAction.action.ReadValue<float>());
-
-            var pointerRay = viewCamera.ScreenPointToRay(pointAction.action.ReadValue<Vector2>());
-            if (!surface.TryGetSurfaceUv(pointerRay, out var pointerUv))
+            _pointer.ResizeFromScroll();
+            if (!_pointer.TryGetSurfaceUv(out var pointerUv))
             {
                 _blowGrowth.Stop();
-                surface.HideBrush();
+                _pointer.HideBrush();
                 simulation.StopBlow();
                 return;
             }
 
-            surface.ShowBrush(pointerUv, _blowRadius.Radius);
+            _pointer.ShowBrush(pointerUv);
 
-            if (blowAction.action.IsPressed()) _blowGrowth.Grow(_blowRadius.Radius, Time.deltaTime);
+            if (blowAction.action.IsPressed()) _blowGrowth.Grow(_pointer.Radius, Time.deltaTime);
             else _blowGrowth.Taper(Time.deltaTime);
 
             if (!_blowGrowth.IsFlowing)

@@ -12,6 +12,7 @@ namespace LatteArt.Fluid
         private static readonly int FoamPhaseId = Shader.PropertyToID("_FoamPhase");
         private static readonly int CoffeeDilutionId = Shader.PropertyToID("_CoffeeDilution");
         private static readonly int CupRadiusId = Shader.PropertyToID("_CupRadius");
+        private static readonly int SimulationTexelSizeId = Shader.PropertyToID("_SimulationTexelSize");
         private static readonly int BrushCenterId = Shader.PropertyToID("_BrushCenter");
         private static readonly int BrushRadiusId = Shader.PropertyToID("_BrushRadius");
         private static readonly Vector2 CupCenterUv = new(0.5f, 0.5f);
@@ -34,6 +35,8 @@ namespace LatteArt.Fluid
         public bool TryGetSurfaceUv(Ray ray, out Vector2 uv)
         {
             uv = default;
+            if (_simulation == null) return false;
+
             var surfaceTransform = surfaceRenderer.transform;
             var surfacePlane = new Plane(surfaceTransform.forward, surfaceTransform.position);
             if (!surfacePlane.Raycast(ray, out var distance)) return false;
@@ -77,6 +80,8 @@ namespace LatteArt.Fluid
                 _simulation.Step(stepDuration);
                 _unsimulatedTime -= stepDuration;
             }
+
+            _simulation.ExecuteRecordedCommands();
         }
 
         private void LateUpdate()
@@ -114,6 +119,7 @@ namespace LatteArt.Fluid
             _surfaceProperties.SetFloat(FoamPhaseId, _simulation.FoamPhase);
             _surfaceProperties.SetFloat(CoffeeDilutionId, _simulation.CoffeeDilution);
             _surfaceProperties.SetFloat(CupRadiusId, _simulation.CupRadius);
+            _surfaceProperties.SetFloat(SimulationTexelSizeId, _simulation.TexelSize);
             _surfaceProperties.SetVector(BrushCenterId, _brushCenter);
             _surfaceProperties.SetFloat(BrushRadiusId, _brushRadius);
             surfaceRenderer.SetPropertyBlock(_surfaceProperties);

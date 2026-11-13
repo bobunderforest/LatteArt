@@ -14,7 +14,8 @@ namespace LatteArt.Fluid
         [SerializeField, Min(1)] private int maxStepsPerFrame = 4;
 
         [Header("Solver")]
-        [SerializeField, Range(1, 100)] private int pressureIterations = 50;
+        [SerializeField, Range(1, 100)] private int pressureIterations = 20;
+        [SerializeField, Range(1f, 1.95f)] private float pressureRelaxation = 1.7f;
 
         [Header("Dynamics")]
         [SerializeField, Min(0f)] private float velocityDamping = 3f;
@@ -33,6 +34,7 @@ namespace LatteArt.Fluid
         public int StepsPerSecond => stepsPerSecond;
         public int MaxStepsPerFrame => maxStepsPerFrame;
         public int PressureIterations => pressureIterations;
+        public float PressureRelaxation => pressureRelaxation;
         public float VelocityDamping => velocityDamping;
         public float StirSettleTime => stirSettleTime;
         public float MilkSinkFraction => milkSinkFraction;

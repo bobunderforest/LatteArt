@@ -17,8 +17,8 @@ namespace LatteArt.Straw
         [SerializeField] private InputActionReference dragAction;
         [SerializeField] private InputActionReference resizeAction;
 
-        private ToolRadius _stirRadius;
         private bool _hasValidSetup;
+        private SurfacePointer _pointer;
         private bool _isStroking;
         private Vector2 _tipUv;
         private Vector2 _tipVelocity;
@@ -28,11 +28,12 @@ namespace LatteArt.Straw
             _hasValidSetup = HasValidSetup();
             if (!_hasValidSetup) return;
 
-            _stirRadius = new ToolRadius(
+            var stirRadius = new ToolRadius(
                 settings.StirRadius,
                 settings.MinStirRadius,
                 settings.MaxStirRadius,
                 settings.ResizeFactorPerScroll);
+            _pointer = new SurfacePointer(surface, viewCamera, pointAction.action, resizeAction.action, stirRadius);
         }
 
         private void OnEnable()
@@ -51,20 +52,18 @@ namespace LatteArt.Straw
             var simulation = surface.Simulation;
             if (simulation == null) return;
 
-            _stirRadius.Resize(resizeAction.action.ReadValue<float>());
-
-            var pointerRay = viewCamera.ScreenPointToRay(pointAction.action.ReadValue<Vector2>());
-            if (!surface.TryGetSurfaceUv(pointerRay, out var pointerUv))
+            _pointer.ResizeFromScroll();
+            if (!_pointer.TryGetSurfaceUv(out var pointerUv))
             {
                 _isStroking = false;
-                surface.HideBrush();
+                _pointer.HideBrush();
                 return;
             }
 
             if (!dragAction.action.IsPressed())
             {
                 _isStroking = false;
-                surface.ShowBrush(pointerUv, _stirRadius.Radius);
+                _pointer.ShowBrush(pointerUv);
                 return;
             }
 
@@ -76,11 +75,11 @@ namespace LatteArt.Straw
             var previousTipUv = _tipUv;
             _tipUv = Vector2.SmoothDamp(
                 _tipUv, pointerUv, ref _tipVelocity, settings.FollowTime, Mathf.Infinity, deltaTime);
-            surface.ShowBrush(_tipUv, _stirRadius.Radius);
+            _pointer.ShowBrush(_tipUv);
 
             var fluidVelocity = _tipVelocity * settings.FluidFollow;
             var coupling = 1f - Mathf.Exp(-deltaTime / settings.GrabTime);
-            simulation.Stir(previousTipUv, _tipUv, fluidVelocity, _stirRadius.Radius, coupling);
+            simulation.Stir(previousTipUv, _tipUv, fluidVelocity, _pointer.Radius, coupling);
         }
 
         private void BeginStroke(Vector2 pointerUv)
