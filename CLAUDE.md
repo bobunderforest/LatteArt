@@ -40,6 +40,10 @@ EditMode tests (editor closed, from project root):
   `SendMessage`.
 - Input via Input System action asset (generated C# class or `PlayerInput`), never legacy `Input.GetKey`.
 - **No** shared abstraction by guess: wait for real second consumer.
+- Prefab-first: objects belonging together (station with its tools, pivots, anchors; cup with surface,
+  highlight, colliders) suggest grouping into one prefab, owner component on root. Parts inside found by
+  lookup (see Fields and serialization), only outside-world dependency left as scene override. Shared look
+  across variants: base prefab + Prefab Variants, not copy.
 
 ## C# codestyle
 
@@ -76,8 +80,15 @@ Standard Microsoft C# convention unless rule below differ.
   property (`public float Speed => _speed;`) only when others need it.
 - Group inspector fields with `[Header("...")]`; `[Min]`, `[Range]` where valid range exist.
 - Init field inline at declare. `readonly` where value fixed after construct.
-- Cache component reference in `Awake` (`GetComponent` once), better: assign via inspector; `[RequireComponent]`
-  for mandatory dependency.
+- Component reference lookup, pick by where dependency live. Look up once in `Awake`, cache in `_camelCase`
+  field, never in hot path:
+  - Same GameObject, mandatory: `[RequireComponent(typeof(T))]` + `GetComponent<T>()`. No serialized field,
+    no null check (Unity guarantee it).
+  - Descendant inside same prefab, exactly one of its type: `GetComponentInChildren<T>(true)` (`true` find
+    inactive child). Validate in `Awake`, `Debug.LogError` with context if missing. Not when prefab can hold
+    several of same type — first match silent pick.
+  - Scene object outside prefab, spawn prefab, plain `Transform` anchor, or one of several same-type
+    candidates: serialized inspector field.
 - Rename serialized field with `[FormerlySerializedAs]` so scene/prefab data survive.
 
 **Methods and lifecycle**

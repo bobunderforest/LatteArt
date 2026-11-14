@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 namespace LatteArt.Fluid
 {
-    public sealed class FluidSimulation : IDisposable
+    public sealed class FluidSimulation : IFluidAppearance, IDisposable
     {
         private const int ThreadGroupSize = 8;
         private const int DivergenceSumStride = sizeof(float) * 2;

@@ -3,29 +3,20 @@ using UnityEngine;
 namespace LatteArt.Fluid
 {
     [DefaultExecutionOrder(AfterToolsExecutionOrder)]
+    [RequireComponent(typeof(Renderer))]
     public sealed class FluidSurface : MonoBehaviour
     {
         private const int AfterToolsExecutionOrder = 100;
 
-        private static readonly int DyeTextureId = Shader.PropertyToID("_DyeTex");
-        private static readonly int FoamCoordsTextureId = Shader.PropertyToID("_FoamCoordsTex");
-        private static readonly int FoamPhaseId = Shader.PropertyToID("_FoamPhase");
-        private static readonly int CoffeeDilutionId = Shader.PropertyToID("_CoffeeDilution");
-        private static readonly int CupRadiusId = Shader.PropertyToID("_CupRadius");
-        private static readonly int SimulationTexelSizeId = Shader.PropertyToID("_SimulationTexelSize");
-        private static readonly int BrushCenterId = Shader.PropertyToID("_BrushCenter");
-        private static readonly int BrushRadiusId = Shader.PropertyToID("_BrushRadius");
         private static readonly Vector2 CupCenterUv = new(0.5f, 0.5f);
 
         [Header("Simulation")]
         [SerializeField] private FluidSettings settings;
         [SerializeField] private ComputeShader simulationShader;
 
-        [Header("Rendering")]
-        [SerializeField] private Renderer surfaceRenderer;
-
         private FluidSimulation _simulation;
         private MaterialPropertyBlock _surfaceProperties;
+        private Renderer _surfaceRenderer;
         private float _unsimulatedTime;
         private Vector2 _brushCenter;
         private float _brushRadius;
@@ -37,11 +28,10 @@ namespace LatteArt.Fluid
             uv = default;
             if (_simulation == null) return false;
 
-            var surfaceTransform = surfaceRenderer.transform;
-            var surfacePlane = new Plane(surfaceTransform.forward, surfaceTransform.position);
+            var surfacePlane = new Plane(transform.forward, transform.position);
             if (!surfacePlane.Raycast(ray, out var distance)) return false;
 
-            var localPoint = surfaceTransform.InverseTransformPoint(ray.GetPoint(distance));
+            var localPoint = transform.InverseTransformPoint(ray.GetPoint(distance));
             uv = new Vector2(localPoint.x + 0.5f, localPoint.y + 0.5f);
             return Vector2.Distance(uv, CupCenterUv) <= _simulation.CupRadius;
         }
@@ -66,8 +56,14 @@ namespace LatteArt.Fluid
             _unsimulatedTime = 0f;
         }
 
+        public FluidSnapshot TakeSnapshot()
+        {
+            return _simulation == null ? null : new FluidSnapshot(_simulation);
+        }
+
         private void Awake()
         {
+            _surfaceRenderer = GetComponent<Renderer>();
             if (!HasValidSetup())
             {
                 enabled = false;
@@ -95,7 +91,7 @@ namespace LatteArt.Fluid
 
         private void LateUpdate()
         {
-            UpdateSurfaceMaterial();
+            FluidSurfaceMaterial.Apply(_surfaceRenderer, _surfaceProperties, _simulation, _brushCenter, _brushRadius);
         }
 
         private void OnDestroy()
@@ -111,27 +107,13 @@ namespace LatteArt.Fluid
                 return false;
             }
 
-            if (settings == null || simulationShader == null || surfaceRenderer == null)
+            if (settings == null || simulationShader == null)
             {
                 Debug.LogError("FluidSurface has unassigned references.", this);
                 return false;
             }
 
             return true;
-        }
-
-        private void UpdateSurfaceMaterial()
-        {
-            surfaceRenderer.GetPropertyBlock(_surfaceProperties);
-            _surfaceProperties.SetTexture(DyeTextureId, _simulation.Dye);
-            _surfaceProperties.SetTexture(FoamCoordsTextureId, _simulation.FoamCoords);
-            _surfaceProperties.SetFloat(FoamPhaseId, _simulation.FoamPhase);
-            _surfaceProperties.SetFloat(CoffeeDilutionId, _simulation.CoffeeDilution);
-            _surfaceProperties.SetFloat(CupRadiusId, _simulation.CupRadius);
-            _surfaceProperties.SetFloat(SimulationTexelSizeId, _simulation.TexelSize);
-            _surfaceProperties.SetVector(BrushCenterId, _brushCenter);
-            _surfaceProperties.SetFloat(BrushRadiusId, _brushRadius);
-            surfaceRenderer.SetPropertyBlock(_surfaceProperties);
         }
     }
 }

@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Player.PlayerSettings
   walkSpeed: 4
   moveSmoothTime: 0.1
-  interactRange: 15
+  interactRange: 2.5
   interactLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
+  maxPlaceSlope: 20
+  minPlaceDistance: 0.5
+  placePreviewMaterial: {fileID: 2100000, guid: 49e63a7527ca09349bf3481a130c8f7d, type: 2}
   lookDegreesPerPixel: 0.1
   minPitch: -80
   maxPitch: 80

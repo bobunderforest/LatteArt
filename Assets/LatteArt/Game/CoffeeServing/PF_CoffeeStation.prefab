@@ -1,0 +1,284 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1145179235089809207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2350257858085429626}
+  m_Layer: 0
+  m_Name: CupCameraAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2350257858085429626
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145179235089809207}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8886090090088620243}
+  m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
+--- !u!1 &4545321397828256418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4484157888379642831}
+  m_Layer: 0
+  m_Name: CupAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4484157888379642831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4545321397828256418}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8886090090088620243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5666881458977145812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4023788380877644135}
+  - component: {fileID: 5563954321567224488}
+  m_Layer: 0
+  m_Name: PourTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4023788380877644135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666881458977145812}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8886090090088620243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5563954321567224488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666881458977145812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f03c32fcfed373458ce6676fb9c2f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Pour.PourTool
+  settings: {fileID: 11400000, guid: 6f1aab38c0ba23742b7ebef78b930aad, type: 2}
+  pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pourAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  resizeStreamAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!1 &6745477464685113983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5144112887742549455}
+  - component: {fileID: 1567284388202799765}
+  m_Layer: 0
+  m_Name: StrawTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5144112887742549455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6745477464685113983}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8886090090088620243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1567284388202799765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6745477464685113983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e183645267698479331ef3238113c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Straw.StrawTool
+  settings: {fileID: 11400000, guid: 9e7da602ac9e59245817ea7f85219e36, type: 2}
+  pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  dragAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  resizeAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!1 &7907433622324800348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8886090090088620243}
+  - component: {fileID: 4544960383392721854}
+  - component: {fileID: 6235573099732361740}
+  m_Layer: 0
+  m_Name: PF_CoffeeStation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8886090090088620243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907433622324800348}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4484157888379642831}
+  - {fileID: 2350257858085429626}
+  - {fileID: 4023788380877644135}
+  - {fileID: 6678636932397172488}
+  - {fileID: 5144112887742549455}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4544960383392721854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907433622324800348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756e153d1ce62dd4fb382db1edad6108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Bar.CoffeeStation
+  cupAnchor: {fileID: 4484157888379642831}
+  emptyCupPrefab: {fileID: 7226532392303883472, guid: a7aabab89fe7a694c82ef91b85c83621, type: 3}
+  drawableLattePrefab: {fileID: 629837719610870967, guid: 82a557492b22cf24980321c7366254b9, type: 3}
+  servedLattePrefab: {fileID: 6621924982654631979, guid: 7d6690010176dba42a1eacc1bb1a7ed5, type: 3}
+  cameraRig: {fileID: 0}
+  resetAction: {fileID: 4543886833105760290, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &6235573099732361740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907433622324800348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d61cf9f00bcc614ea1c751c7fb9a961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Tools.ToolSelector
+  slots:
+  - tool: {fileID: 5563954321567224488}
+    selectAction: {fileID: 7903166510273518912, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - tool: {fileID: 1567284388202799765}
+    selectAction: {fileID: 999351806976023328, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - tool: {fileID: 1108550880293177342}
+    selectAction: {fileID: -4664319228366750792, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  initialSlot: 0
+--- !u!1 &9126619412344571883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6678636932397172488}
+  - component: {fileID: 1108550880293177342}
+  m_Layer: 0
+  m_Name: SteamWandTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6678636932397172488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9126619412344571883}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8886090090088620243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1108550880293177342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9126619412344571883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b20274b0c96d1846aedbfa215a002a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.SteamWand.SteamWandTool
+  settings: {fileID: 11400000, guid: 18862f9776ba04f40b65d0148d5af3e8, type: 2}
+  pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  blowAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  resizeAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -12,6 +12,9 @@ namespace LatteArt.Player
         [Header("Interaction")]
         [SerializeField, Min(0f)] private float interactRange = 1.5f;
         [SerializeField] private LayerMask interactLayers = ~0;
+        [SerializeField, Range(0f, 90f)] private float maxPlaceSlope = 20f;
+        [SerializeField, Min(0f)] private float minPlaceDistance = 0.5f;
+        [SerializeField] private Material placePreviewMaterial;
 
         [Header("Look")]
         [SerializeField, Range(0.01f, 1f)] private float lookDegreesPerPixel = 0.1f;
@@ -23,6 +26,9 @@ namespace LatteArt.Player
         public float LookDegreesPerPixel => lookDegreesPerPixel;
         public float InteractRange => interactRange;
         public LayerMask InteractLayers => interactLayers;
+        public float MaxPlaceSlope => maxPlaceSlope;
+        public float MinPlaceDistance => minPlaceDistance;
+        public Material PlacePreviewMaterial => placePreviewMaterial;
         public float MinPitch => minPitch;
         public float MaxPitch => maxPitch;
     }

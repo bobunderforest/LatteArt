@@ -19,6 +19,13 @@ namespace LatteArt.Fluid
             return texture;
         }
 
+        public static RenderTexture Copy(RenderTexture source, string name)
+        {
+            var copy = Create(source.width, source.graphicsFormat, name);
+            Graphics.CopyTexture(source, copy);
+            return copy;
+        }
+
         public static GraphicsFormat FilterableFormat(GraphicsFormat preferred, GraphicsFormat fallback)
         {
             return SystemInfo.IsFormatSupported(preferred, GraphicsFormatUsage.Linear) ? preferred : fallback;

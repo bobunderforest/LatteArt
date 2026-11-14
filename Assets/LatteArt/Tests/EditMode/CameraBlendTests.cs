@@ -1,4 +1,4 @@
-using LatteArt.View;
+using LatteArt.CameraUtils;
 using NUnit.Framework;
 
 namespace LatteArt.Tests.EditMode

@@ -1,4 +1,4 @@
-using LatteArt.Tools;
+using LatteArt.CoffeeTools;
 using UnityEngine;
 
 namespace LatteArt.Hints

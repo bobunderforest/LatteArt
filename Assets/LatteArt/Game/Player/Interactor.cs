@@ -63,7 +63,7 @@ namespace LatteArt.Player
         private void OnInteractPerformed(InputAction.CallbackContext context)
         {
             var target = IsAlive(_held) ? _held : _hovered;
-            if (IsAlive(target)) target.Interact();
+            if (IsAlive(target)) target.Interact(this);
         }
 
         private void Hover(IInteractable interactable)

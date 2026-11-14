@@ -1,4 +1,4 @@
-using LatteArt.Tools;
+using LatteArt.CoffeeTools;
 using NUnit.Framework;
 
 namespace LatteArt.Tests.EditMode
