@@ -57,6 +57,15 @@ namespace LatteArt.Fluid
             _brushRadius = 0f;
         }
 
+        public void ResetSimulation()
+        {
+            if (_simulation == null) return;
+
+            _simulation.Dispose();
+            _simulation = new FluidSimulation(simulationShader, settings);
+            _unsimulatedTime = 0f;
+        }
+
         private void Awake()
         {
             if (!HasValidSetup())

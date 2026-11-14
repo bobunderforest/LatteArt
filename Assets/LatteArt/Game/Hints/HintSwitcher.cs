@@ -36,14 +36,19 @@ namespace LatteArt.Hints
             if (!_hasValidSetup) return;
 
             if (station != null) station.InUseChanged -= ShowHintsFor;
-            if (firstPersonHints != null) firstPersonHints.enabled = false;
-            if (stationHints != null) stationHints.enabled = false;
+            SetPanelEnabled(firstPersonHints, false);
+            SetPanelEnabled(stationHints, false);
         }
 
         private void ShowHintsFor(bool isStationInUse)
         {
-            firstPersonHints.enabled = !isStationInUse;
-            stationHints.enabled = isStationInUse;
+            SetPanelEnabled(firstPersonHints, !isStationInUse);
+            SetPanelEnabled(stationHints, isStationInUse);
+        }
+
+        private static void SetPanelEnabled(HintPanel panel, bool isEnabled)
+        {
+            if (panel != null) panel.enabled = isEnabled;
         }
 
         private bool HasValidSetup()

@@ -604,6 +604,9 @@ PrefabInstance:
       addedObject: {fileID: 1501390320}
     - targetCorrespondingSourceObject: {fileID: 2887038123343096603, guid: ae9f60f9bddf8234a8c5ab6f26866186, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1501390325}
+    - targetCorrespondingSourceObject: {fileID: 2887038123343096603, guid: ae9f60f9bddf8234a8c5ab6f26866186, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1501390321}
     - targetCorrespondingSourceObject: {fileID: 2887038123343096603, guid: ae9f60f9bddf8234a8c5ab6f26866186, type: 3}
       insertIndex: -1
@@ -2725,6 +2728,9 @@ MonoBehaviour:
   - action: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: 
     caption: Complete
+  - action: {fileID: 4543886833105760290, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Reset
 --- !u!114 &464076622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10165,6 +10171,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3368194, y: 0.23, z: 0.34201527}
   m_Center: {x: 0.0000003501773, y: 0.1, z: -0.00000011920929}
+--- !u!114 &1501390325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501390317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f5b68a7579e8844d8ad66baa235075d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Bar.CupReset
+  station: {fileID: 1501390320}
+  surface: {fileID: 415368115}
+  resetAction: {fileID: 4543886833105760290, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1001 &1507549902
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1036,7 +1036,7 @@
                     "name": "SelectStraw",
                     "type": "Button",
                     "id": "367894dc-aa07-4483-bf65-4429e19f9ef4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1045,6 +1045,15 @@
                     "name": "SelectSteamWand",
                     "type": "Button",
                     "id": "3df32560-76e7-4607-8352-16a0b8478b40",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reset",
+                    "type": "Button",
+                    "id": "7294bed8-f157-4053-9173-a375760a0ad1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1126,6 +1135,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SelectSteamWand",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1dd94b90-0da2-43bf-b6c8-eb5f7b45af3b",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Reset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
