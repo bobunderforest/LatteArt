@@ -1,3 +1,4 @@
+using System;
 using LatteArt.Player;
 using LatteArt.Tools;
 using LatteArt.View;
@@ -17,6 +18,10 @@ namespace LatteArt.Bar
         private bool _hasValidSetup;
         private bool _isInUse;
 
+        public event Action<bool> InUseChanged;
+
+        public bool IsInUse => _isInUse;
+
         private void Awake()
         {
             _hasValidSetup = HasValidSetup();
@@ -35,10 +40,11 @@ namespace LatteArt.Bar
             if (!_isInUse) return;
 
             _isInUse = false;
-            toolSelector.enabled = false;
-            interactor.ReleaseTarget();
-            firstPersonController.enabled = true;
-            cameraRig.BlendToFirstPerson();
+            if (toolSelector != null) toolSelector.enabled = false;
+            if (interactor != null) interactor.ReleaseTarget();
+            if (firstPersonController != null) firstPersonController.enabled = true;
+            if (cameraRig != null) cameraRig.BlendToFirstPerson();
+            InUseChanged?.Invoke(false);
         }
 
         public void SetHovered(bool isHovered)
@@ -66,11 +72,14 @@ namespace LatteArt.Bar
                 highlight.SetVisible(false);
                 interactor.HoldTarget(this);
                 cameraRig.BlendToStation();
-                return;
+            }
+            else
+            {
+                interactor.ReleaseTarget();
+                cameraRig.BlendToFirstPerson();
             }
 
-            interactor.ReleaseTarget();
-            cameraRig.BlendToFirstPerson();
+            InUseChanged?.Invoke(isInUse);
         }
 
         private bool HasValidSetup()

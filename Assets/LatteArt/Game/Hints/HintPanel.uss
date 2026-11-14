@@ -1,0 +1,45 @@
+.hint-list {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    flex-direction: column;
+}
+
+.hint {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.hint__key {
+    min-width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0 8px;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(30, 20, 15, 0.65);
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.hint__caption {
+    margin: 0 0 0 10px;
+    padding: 0;
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.hint--highlighted > .hint__key {
+    border-color: rgb(255, 210, 120);
+    background-color: rgba(200, 130, 50, 0.85);
+}
+
+.hint--highlighted > .hint__caption {
+    color: rgb(255, 210, 120);
+    -unity-font-style: bold;
+}

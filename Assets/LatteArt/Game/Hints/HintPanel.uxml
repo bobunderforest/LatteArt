@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="HintPanel.uss" />
+    <ui:VisualElement name="hint-list" class="hint-list" />
+</ui:UXML>

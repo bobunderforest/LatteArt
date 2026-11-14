@@ -2663,6 +2663,105 @@ MonoBehaviour:
   - tool: {fileID: 1253119685}
     selectAction: {fileID: -4664319228366750792, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   initialSlot: 0
+--- !u!1 &464076619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 464076620}
+  - component: {fileID: 464076622}
+  - component: {fileID: 464076621}
+  - component: {fileID: 464076623}
+  m_Layer: 0
+  m_Name: StationHints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &464076620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464076619}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 711550331}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &464076621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464076619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43635449b8bac2c4d8c360e4f1a70604, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Hints.HintPanel
+  hints:
+  - action: {fileID: 7903166510273518912, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Milk
+  - action: {fileID: 999351806976023328, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Needle
+  - action: {fileID: -4664319228366750792, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Steam wand
+  - action: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: Mouse wheel
+    caption: Change size
+  - action: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Complete
+--- !u!114 &464076622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464076619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 81e1043decc331c429318c70781bf5bb, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ca3fbd45e6934b746b788d9687a7dfe1, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &464076623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464076619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fcf45cccd72b443be4abcf38394cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Hints.ToolHintHighlighter
+  toolSelector: {fileID: 455243175}
+  hints: {fileID: 464076621}
 --- !u!1 &482075575 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6655508769342769027, guid: 926cca285c2783241b76c8c2138a96be, type: 3}
@@ -4485,6 +4584,39 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -629719859055844128, guid: 0d9a071234fb7214aac05d31ef866257, type: 3}
+--- !u!1 &711550330
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 711550331}
+  m_Layer: 0
+  m_Name: Hints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &711550331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711550330}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.38259, y: 1.51702, z: -1.82291}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1235803974}
+  - {fileID: 464076620}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &714360747
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5561,7 +5693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6736756103693848536, guid: 59b581fdc8405934d896e19f087117a5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.235
+      value: 9.776
       objectReference: {fileID: 0}
     - target: {fileID: 6736756103693848536, guid: 59b581fdc8405934d896e19f087117a5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5569,7 +5701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6736756103693848536, guid: 59b581fdc8405934d896e19f087117a5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.261
+      value: -1.535
       objectReference: {fileID: 0}
     - target: {fileID: 6736756103693848536, guid: 59b581fdc8405934d896e19f087117a5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7976,6 +8108,53 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7341034057962149212, guid: 58fe1bfe52bfccf44a2122d146f4771d, type: 3}
+--- !u!1 &1178552214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1178552216}
+  - component: {fileID: 1178552215}
+  m_Layer: 0
+  m_Name: HintSwitcher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1178552215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178552214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b067432c36afd3546831bbf94f12e7f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Hints.HintSwitcher
+  station: {fileID: 1501390320}
+  firstPersonHints: {fileID: 1235803975}
+  stationHints: {fileID: 464076621}
+--- !u!4 &1178552216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178552214}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.38259, y: 1.46065, z: -1.82734}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1178716135
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8366,6 +8545,84 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -629719859055844128, guid: 0d9a071234fb7214aac05d31ef866257, type: 3}
+--- !u!1 &1235803973
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1235803974}
+  - component: {fileID: 1235803976}
+  - component: {fileID: 1235803975}
+  m_Layer: 0
+  m_Name: FirstPersonHints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1235803974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235803973}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 711550331}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1235803975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235803973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43635449b8bac2c4d8c360e4f1a70604, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Hints.HintPanel
+  hints:
+  - action: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: E
+    caption: Interact
+  - action: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: WASD
+    caption: Move
+  - action: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: Mouse
+    caption: Look
+--- !u!114 &1235803976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235803973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 81e1043decc331c429318c70781bf5bb, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ca3fbd45e6934b746b788d9687a7dfe1, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!1001 &1245546452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14629,3 +14886,5 @@ SceneRoots:
   - {fileID: 600240841}
   - {fileID: 1850907595}
   - {fileID: 917425516}
+  - {fileID: 1178552216}
+  - {fileID: 711550331}

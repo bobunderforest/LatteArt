@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LatteArt.Tools
 {
@@ -11,6 +13,8 @@ namespace LatteArt.Tools
 
         private bool _hasValidSetup;
         private int _selectedSlot;
+
+        public event Action<InputAction> ToolSelected;
 
         private void Awake()
         {
@@ -29,7 +33,7 @@ namespace LatteArt.Tools
                 return;
             }
 
-            EnableOnly(_selectedSlot);
+            ApplySelection();
         }
 
         private void OnDisable()
@@ -43,18 +47,25 @@ namespace LatteArt.Tools
         {
             for (var i = 0; i < slots.Length; i++)
             {
-                if (!slots[i].SelectAction.action.WasPressedThisFrame()) continue;
+                if (i == _selectedSlot || !slots[i].SelectAction.action.WasPressedThisFrame()) continue;
 
                 _selectedSlot = i;
-                EnableOnly(i);
+                ApplySelection();
             }
+        }
+
+        private void ApplySelection()
+        {
+            EnableOnly(_selectedSlot);
+            ToolSelected?.Invoke(slots[_selectedSlot].SelectAction.action);
         }
 
         private void EnableOnly(int slotToEnable)
         {
             for (var i = 0; i < slots.Length; i++)
             {
-                slots[i].Tool.enabled = i == slotToEnable;
+                var tool = slots[i].Tool;
+                if (tool != null) tool.enabled = i == slotToEnable;
             }
         }
 
