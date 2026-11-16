@@ -1,3 +1,4 @@
+using System;
 using LatteArt.MaterialLibrary.Outline;
 using LatteArt.Player;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace LatteArt.CoffeeServing
 
         private bool _hasValidSetup;
         private OutlineHighlight _highlight;
+
+        public event Action Brewed;
 
         private void Awake()
         {
@@ -31,6 +34,7 @@ namespace LatteArt.CoffeeServing
             if (!_hasValidSetup || !station.TryPourCoffee()) return;
 
             _highlight.SetVisible(false);
+            Brewed?.Invoke();
         }
 
         private bool HasValidSetup()

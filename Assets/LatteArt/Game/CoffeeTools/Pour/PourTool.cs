@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace LatteArt.CoffeeTools.Pour
 {
-    public sealed class PourTool : MonoBehaviour, ISurfaceTool
+    public sealed class PourTool : MonoBehaviour, ISurfaceTool, IToolActivity
     {
         [Header("Dependencies")]
         [SerializeField] private PourSettings settings;
@@ -21,6 +21,9 @@ namespace LatteArt.CoffeeTools.Pour
         private SurfacePointer _pointer;
         private StreamGrowth _streamGrowth;
         private Vector2 _streamUv;
+
+        public bool IsActive => _streamGrowth != null && _streamGrowth.IsFlowing;
+        public float Intensity => IsActive ? Mathf.Clamp01(_streamGrowth.Radius / settings.Stream.MaxRadius) : 0f;
 
         private void Awake()
         {

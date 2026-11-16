@@ -1,3 +1,4 @@
+using System;
 using LatteArt.MaterialLibrary.Outline;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ namespace LatteArt.Player
         private Collider[] _colliders;
         private bool _hasValidSetup;
         private OutlineHighlight _highlight;
+
+        public event Action PickedUp;
+        public event Action Placed;
 
         private void Awake()
         {
@@ -45,6 +49,7 @@ namespace LatteArt.Player
             SetCollidersEnabled(false);
             transform.SetParent(anchor, false);
             transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            PickedUp?.Invoke();
         }
 
         public void PlaceAt(Vector3 position, Quaternion rotation)
@@ -52,6 +57,7 @@ namespace LatteArt.Player
             transform.SetParent(null);
             transform.SetPositionAndRotation(position, rotation);
             SetCollidersEnabled(true);
+            Placed?.Invoke();
         }
 
         private void SetCollidersEnabled(bool isEnabled)

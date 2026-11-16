@@ -18,6 +18,9 @@ namespace LatteArt.CoffeeTools.Straw
         [Header("Motion")]
         [SerializeField, Range(0f, 0.2f)] private float followTime = 0.015f;
 
+        [Header("Sound")]
+        [SerializeField, Range(0.1f, 10f)] private float loudestStirSpeed = 1.5f;
+
         public float StirRadius => stirRadius;
         public float MinStirRadius => minStirRadius;
         public float MaxStirRadius => maxStirRadius;
@@ -25,6 +28,7 @@ namespace LatteArt.CoffeeTools.Straw
         public float FluidFollow => fluidFollow;
         public float GrabTime => grabTime;
         public float FollowTime => followTime;
+        public float LoudestStirSpeed => loudestStirSpeed;
 
         private void OnValidate()
         {

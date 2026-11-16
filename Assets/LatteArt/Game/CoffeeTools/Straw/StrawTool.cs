@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace LatteArt.CoffeeTools.Straw
 {
-    public sealed class StrawTool : MonoBehaviour, ISurfaceTool
+    public sealed class StrawTool : MonoBehaviour, ISurfaceTool, IToolActivity
     {
         [Header("Dependencies")]
         [SerializeField] private StrawSettings settings;
@@ -21,6 +21,9 @@ namespace LatteArt.CoffeeTools.Straw
         private bool _isStroking;
         private Vector2 _tipUv;
         private Vector2 _tipVelocity;
+
+        public bool IsActive => _isStroking;
+        public float Intensity => _isStroking ? Mathf.Clamp01(_tipVelocity.magnitude / settings.LoudestStirSpeed) : 0f;
 
         private void Awake()
         {

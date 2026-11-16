@@ -72,6 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4023788380877644135}
   - component: {fileID: 5563954321567224488}
+  - component: {fileID: 8389208210359916944}
   m_Layer: 0
   m_Name: PourTool
   m_TagString: Untagged
@@ -110,6 +111,23 @@ MonoBehaviour:
   pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   pourAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resizeStreamAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &8389208210359916944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5666881458977145812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3169cab31eb1874ca253a44c9ec41fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.CoffeeTools.ToolActivityAudio
+  emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
+  sound: {fileID: 6418180475301049370, guid: 27a18c71350b0a44da89e79d6baaf807, type: 2}
+  isLooping: 0
+  fadeTime: 0.15
+  volumeByIntensity: 0
 --- !u!1 &6745477464685113983
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5144112887742549455}
   - component: {fileID: 1567284388202799765}
+  - component: {fileID: 441592427902826886}
   m_Layer: 0
   m_Name: StrawTool
   m_TagString: Untagged
@@ -158,6 +177,23 @@ MonoBehaviour:
   pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   dragAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resizeAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &441592427902826886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6745477464685113983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3169cab31eb1874ca253a44c9ec41fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.CoffeeTools.ToolActivityAudio
+  emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
+  sound: {fileID: 6418180475301049370, guid: 4c040a23efaea9c408cb43eb746bf19a, type: 2}
+  isLooping: 0
+  fadeTime: 0.15
+  volumeByIntensity: 0
 --- !u!1 &7907433622324800348
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,6 +205,7 @@ GameObject:
   - component: {fileID: 8886090090088620243}
   - component: {fileID: 4544960383392721854}
   - component: {fileID: 6235573099732361740}
+  - component: {fileID: 1447547337817998448}
   m_Layer: 0
   m_Name: PF_CoffeeStation
   m_TagString: Untagged
@@ -234,6 +271,24 @@ MonoBehaviour:
   - tool: {fileID: 1108550880293177342}
     selectAction: {fileID: -4664319228366750792, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   initialSlot: 0
+--- !u!114 &1447547337817998448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907433622324800348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ccd3daebb57864bb78d3c5c1fb143e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.CoffeeServing.CoffeeStationAudio
+  emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
+  cupPlacedSound: {fileID: 6418180475301049370, guid: eded78bfed3b46548bf9c3e802f9f30c, type: 2}
+  surfaceResetSound: {fileID: 6418180475301049370, guid: bde67f3cc9e76fa48aac4a8ba903a7d6, type: 2}
+  enterSound: {fileID: 0}
+  leaveSound: {fileID: 0}
+  toolSwitchSound: {fileID: 6418180475301049370, guid: 4396f4d13ffe8834baaf675e950fd1ee, type: 2}
 --- !u!1 &9126619412344571883
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6678636932397172488}
   - component: {fileID: 1108550880293177342}
+  - component: {fileID: 5293422099804886638}
   m_Layer: 0
   m_Name: SteamWandTool
   m_TagString: Untagged
@@ -282,3 +338,20 @@ MonoBehaviour:
   pointAction: {fileID: -7191881173234956173, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   blowAction: {fileID: -1909157452563097884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resizeAction: {fileID: 7868475485603422773, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &5293422099804886638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9126619412344571883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3169cab31eb1874ca253a44c9ec41fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.CoffeeTools.ToolActivityAudio
+  emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
+  sound: {fileID: 6418180475301049370, guid: 0122ddad6b4e98d45845f189178bfff2, type: 2}
+  isLooping: 1
+  fadeTime: 0.15
+  volumeByIntensity: 0

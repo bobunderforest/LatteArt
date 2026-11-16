@@ -26,7 +26,7 @@ namespace LatteArt.Player
 
         private void Update()
         {
-            if (_carried == null || !TryFindPlacement(out var position, out var rotation)) return;
+            if (_carried == null || !TryFindPlacement(out var position, out var rotation, out _)) return;
 
             _preview.Draw(position, rotation);
         }
@@ -48,18 +48,24 @@ namespace LatteArt.Player
 
         public void TryPlace()
         {
-            if (_carried == null || !TryFindPlacement(out var position, out var rotation)) return;
+            if (_carried == null) return;
+            if (!TryFindPlacement(out var position, out var rotation, out var surfaceCollider)) return;
 
-            _carried.PlaceAt(position, rotation);
+            var placed = _carried;
+            placed.PlaceAt(position, rotation);
             _carried = null;
             _preview.Clear();
             _interactor.ReleaseTarget();
+
+            var surface = surfaceCollider.GetComponentInParent<PlacementSurface>();
+            if (surface != null) surface.NotifyPlaced(placed);
         }
 
-        private bool TryFindPlacement(out Vector3 position, out Quaternion rotation)
+        private bool TryFindPlacement(out Vector3 position, out Quaternion rotation, out Collider surfaceCollider)
         {
             position = default;
             rotation = default;
+            surfaceCollider = null;
 
             var ray = new Ray(rayOrigin.position, rayOrigin.forward);
             var hasHit = Physics.Raycast(
@@ -71,6 +77,7 @@ namespace LatteArt.Player
 
             var facing = Vector3.ProjectOnPlane(rayOrigin.forward, Vector3.up);
             position = hit.point;
+            surfaceCollider = hit.collider;
             rotation = facing.sqrMagnitude > 0f ? Quaternion.LookRotation(facing) : Quaternion.identity;
             return true;
         }

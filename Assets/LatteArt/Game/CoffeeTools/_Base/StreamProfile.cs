@@ -18,6 +18,8 @@ namespace LatteArt.CoffeeTools
         [SerializeField, Range(0.01f, 0.5f)] private float growEaseTime = 0.03f;
         [SerializeField, Range(0.05f, 1f)] private float taperTime = 0.15f;
 
+        public float MaxRadius => maxRadius;
+
         public ToolRadius CreateRadius()
         {
             return new ToolRadius(radius, minRadius, maxRadius, resizeFactorPerScroll);

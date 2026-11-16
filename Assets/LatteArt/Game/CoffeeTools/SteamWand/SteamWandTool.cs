@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace LatteArt.CoffeeTools.SteamWand
 {
-    public sealed class SteamWandTool : MonoBehaviour, ISurfaceTool
+    public sealed class SteamWandTool : MonoBehaviour, ISurfaceTool, IToolActivity
     {
         [Header("Dependencies")]
         [SerializeField] private SteamWandSettings settings;
@@ -19,6 +19,9 @@ namespace LatteArt.CoffeeTools.SteamWand
         private Camera _viewCamera;
         private SurfacePointer _pointer;
         private StreamGrowth _blowGrowth;
+
+        public bool IsActive => _blowGrowth != null && _blowGrowth.IsFlowing;
+        public float Intensity => IsActive ? Mathf.Clamp01(_blowGrowth.Radius / settings.BlowStream.MaxRadius) : 0f;
 
         private void Awake()
         {

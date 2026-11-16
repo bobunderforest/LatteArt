@@ -16,6 +16,7 @@ namespace LatteArt.CoffeeTools
         private int _selectedSlot;
 
         public event Action<InputAction> ToolSelected;
+        public event Action ToolSwitched;
 
         private void Awake()
         {
@@ -52,6 +53,7 @@ namespace LatteArt.CoffeeTools
 
                 _selectedSlot = i;
                 ApplySelection();
+                ToolSwitched?.Invoke();
             }
         }
 

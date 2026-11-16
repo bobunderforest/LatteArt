@@ -29,6 +29,8 @@ namespace LatteArt.CoffeeServing
         private FirstPersonController _playerController;
         private ToolSelector _toolSelector;
 
+        public event Action CupPlaced;
+        public event Action SurfaceReset;
         public event Action<bool> InUseChanged;
 
         public bool IsInUse => _isInUse;
@@ -56,7 +58,10 @@ namespace LatteArt.CoffeeServing
 
         private void Update()
         {
-            if (_isInUse && resetAction.action.WasPressedThisFrame()) _latte.Surface.ResetSimulation();
+            if (!_isInUse || !resetAction.action.WasPressedThisFrame()) return;
+
+            _latte.Surface.ResetSimulation();
+            SurfaceReset?.Invoke();
         }
 
         public void SetHovered(bool isHovered)
@@ -77,6 +82,7 @@ namespace LatteArt.CoffeeServing
             if (!CanPlaceCup) return false;
 
             _emptyCup = Instantiate(emptyCupPrefab, cupAnchor);
+            CupPlaced?.Invoke();
             return true;
         }
 

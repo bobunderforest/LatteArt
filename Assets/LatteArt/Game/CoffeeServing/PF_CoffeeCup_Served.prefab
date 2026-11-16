@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4342920367502491670, guid: 2d5284f5494052042898b4902722522d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2870845413448337755}
+    - targetCorrespondingSourceObject: {fileID: 4342920367502491670, guid: 2d5284f5494052042898b4902722522d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -991153585625127257}
     - targetCorrespondingSourceObject: {fileID: 996932367669419404, guid: 2d5284f5494052042898b4902722522d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1474246304964897408}
@@ -112,3 +115,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d90c624646333a44ea8d4ad1e3d78cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Carry.Carryable
+--- !u!114 &-991153585625127257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3111121380909933851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9deaef1274780e64d85bd3c607ecbab9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Player.CarryableAudio
+  emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
+  pickUpSound: {fileID: 6418180475301049370, guid: 5eada3dfb13bb40458ec42e6a2c54299, type: 2}
+  placeSound: {fileID: 6418180475301049370, guid: eded78bfed3b46548bf9c3e802f9f30c, type: 2}
