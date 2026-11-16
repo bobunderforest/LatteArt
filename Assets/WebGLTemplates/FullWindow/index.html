@@ -46,10 +46,18 @@
     <div id="loading-bar"><div id="loading-bar-fill"></div></div>
     <script src="Build/{{{ LOADER_FILENAME }}}"></script>
     <script>
+      const canvas = document.querySelector("#unity-canvas");
       const loadingBar = document.querySelector("#loading-bar");
       const loadingBarFill = document.querySelector("#loading-bar-fill");
 
-      createUnityInstance(document.querySelector("#unity-canvas"), {
+      const requestPointerLock = canvas.requestPointerLock.bind(canvas);
+      canvas.requestPointerLock = (options) => {
+        const request = requestPointerLock(options);
+        if (request) request.catch((error) => console.warn(error.message));
+        return request;
+      };
+
+      createUnityInstance(canvas, {
         arguments: [],
         dataUrl: "Build/{{{ DATA_FILENAME }}}",
         frameworkUrl: "Build/{{{ FRAMEWORK_FILENAME }}}",
