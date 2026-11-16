@@ -15,6 +15,8 @@ namespace LatteArt.Player
         private bool _hasValidSetup;
         private IInteractable _held;
         private IInteractable _hovered;
+        private Collider _lastHitCollider;
+        private IInteractable _lastHitInteractable;
 
         private void Awake()
         {
@@ -35,6 +37,8 @@ namespace LatteArt.Player
         private void OnDisable()
         {
             _held = null;
+            _lastHitCollider = null;
+            _lastHitInteractable = null;
             Hover(null);
             if (!_hasValidSetup) return;
 
@@ -86,7 +90,12 @@ namespace LatteArt.Player
             var hasHit = Physics.Raycast(
                 ray, out var hit, settings.InteractRange, settings.InteractLayers, QueryTriggerInteraction.Collide);
 
-            return hasHit ? hit.collider.GetComponentInParent<IInteractable>() : null;
+            var hitCollider = hasHit ? hit.collider : null;
+            if (hitCollider == _lastHitCollider) return _lastHitInteractable;
+
+            _lastHitCollider = hitCollider;
+            _lastHitInteractable = hitCollider != null ? hitCollider.GetComponentInParent<IInteractable>() : null;
+            return _lastHitInteractable;
         }
 
         private bool HasValidSetup()

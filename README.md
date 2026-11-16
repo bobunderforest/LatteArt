@@ -20,7 +20,7 @@ Game code lives in `Assets/LatteArt/Game/`, one folder per feature, in the `Latt
 - **Fluid** — GPU simulation on a compute shader: force and milk injection, pressure solve, and advection of
   velocity, dye and foam. `FluidSimulation` is plain C#; `FluidSurface` is the thin `MonoBehaviour` driving it.
   `FluidSnapshot` and `FrozenFluidSurface` keep the finished drawing on the served cup without simulating.
-- **CoffeeServing** — `CoffeeStation` owns the drawing session: enter, reset, serve. `CupTray` and
+- **CoffeeServing** — `CoffeeStation` owns the drawing session: enter, reset, serve, leave. `CupTray` and
   `CoffeeMachine` handle the steps before drawing.
 - **CoffeeTools** — tools implement `ISurfaceTool`. `ToolSelector` owns the slots, attaches tools to the
   surface and keeps one enabled at a time. Tuning lives in `SO_` assets.

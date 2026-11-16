@@ -50,9 +50,9 @@ namespace LatteArt.Player
             Play(pickUpSound);
         }
 
-        private void PlayPlace()
+        private void PlayPlace(PlacementSurface surface)
         {
-            Play(placeSound);
+            if (surface == null) Play(placeSound);
         }
 
         private void Play(AudioResource sound)

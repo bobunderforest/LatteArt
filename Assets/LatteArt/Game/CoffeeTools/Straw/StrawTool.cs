@@ -44,7 +44,7 @@ namespace LatteArt.CoffeeTools.Straw
                 settings.MinStirRadius,
                 settings.MaxStirRadius,
                 settings.ResizeFactorPerScroll);
-            _pointer = new SurfacePointer(pointAction.action, resizeAction.action, stirRadius);
+            _pointer = new SurfacePointer(pointAction.action, dragAction.action, resizeAction.action, stirRadius);
         }
 
         private void OnEnable()
@@ -70,12 +70,17 @@ namespace LatteArt.CoffeeTools.Straw
             _viewCamera = null;
         }
 
+        public void SetPointerBlocked(bool isBlocked)
+        {
+            if (_pointer != null) _pointer.IsBlocked = isBlocked;
+        }
+
         private void Update()
         {
             var simulation = _surface.Simulation;
             if (simulation == null) return;
 
-            _pointer.ResizeFromScroll();
+            _pointer.ReadInput();
             if (!_pointer.TryGetSurfaceUv(_surface, _viewCamera, out var pointerUv))
             {
                 _isStroking = false;
@@ -83,7 +88,7 @@ namespace LatteArt.CoffeeTools.Straw
                 return;
             }
 
-            if (!dragAction.action.IsPressed())
+            if (!_pointer.IsPressed)
             {
                 _isStroking = false;
                 _surface.ShowBrush(pointerUv, _pointer.Radius);

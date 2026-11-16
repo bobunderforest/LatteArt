@@ -248,6 +248,20 @@ namespace LatteArt.Fluid
             _commands.Clear();
         }
 
+        public void Clear()
+        {
+            ExecuteRecordedCommands();
+            FluidTexture.Clear(_velocity.Read);
+            FluidTexture.Clear(_stir.Read);
+            FluidTexture.Clear(_sink.Read);
+            FluidTexture.Clear(_dye.Read);
+            FluidTexture.Clear(_foamCoords.Read);
+            FluidTexture.Clear(_pressure);
+            _sunkMilkVolume = 0f;
+            _foamTime = 0f;
+            _hasFoamCoords = false;
+        }
+
         public void Dispose()
         {
             _commands.Release();

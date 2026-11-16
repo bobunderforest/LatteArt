@@ -52,12 +52,12 @@ namespace LatteArt.Player
             if (!TryFindPlacement(out var position, out var rotation, out var surfaceCollider)) return;
 
             var placed = _carried;
-            placed.PlaceAt(position, rotation);
+            var surface = surfaceCollider.GetComponentInParent<PlacementSurface>();
+            placed.PlaceAt(position, rotation, surface);
             _carried = null;
             _preview.Clear();
             _interactor.ReleaseTarget();
 
-            var surface = surfaceCollider.GetComponentInParent<PlacementSurface>();
             if (surface != null) surface.NotifyPlaced(placed);
         }
 

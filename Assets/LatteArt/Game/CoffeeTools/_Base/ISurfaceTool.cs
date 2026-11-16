@@ -9,5 +9,6 @@ namespace LatteArt.CoffeeTools
 
         void Attach(FluidSurface surface, Camera viewCamera);
         void Detach();
+        void SetPointerBlocked(bool isBlocked);
     }
 }

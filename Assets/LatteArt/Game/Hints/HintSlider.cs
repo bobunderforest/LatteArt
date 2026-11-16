@@ -18,6 +18,7 @@ namespace LatteArt.Hints
             AddToClassList(TrackClass);
             _fill.AddToClassList(FillClass);
             _fill.pickingMode = PickingMode.Ignore;
+            _fill.style.width = Length.Percent(0f);
             Add(_fill);
 
             RegisterCallback<PointerDownEvent>(OnPointerDown);
@@ -32,7 +33,10 @@ namespace LatteArt.Hints
             get => _value;
             set
             {
-                _value = Mathf.Clamp01(value);
+                var clampedValue = Mathf.Clamp01(value);
+                if (Mathf.Approximately(clampedValue, _value)) return;
+
+                _value = clampedValue;
                 _fill.style.width = Length.Percent(_value * 100f);
             }
         }

@@ -51,14 +51,16 @@ namespace LatteArt.Fluid
         {
             if (_simulation == null) return;
 
-            _simulation.Dispose();
-            _simulation = new FluidSimulation(simulationShader, settings);
+            _simulation.Clear();
             _unsimulatedTime = 0f;
         }
 
         public FluidSnapshot TakeSnapshot()
         {
-            return _simulation == null ? null : new FluidSnapshot(_simulation);
+            if (_simulation == null) return null;
+
+            _simulation.ExecuteRecordedCommands();
+            return new FluidSnapshot(_simulation);
         }
 
         private void Awake()

@@ -37,7 +37,7 @@ namespace LatteArt.Fluid
             Object.Destroy(texture);
         }
 
-        private static void Clear(RenderTexture texture)
+        public static void Clear(RenderTexture texture)
         {
             var previous = RenderTexture.active;
             RenderTexture.active = texture;

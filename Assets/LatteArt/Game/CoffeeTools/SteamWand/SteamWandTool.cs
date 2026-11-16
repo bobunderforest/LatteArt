@@ -37,7 +37,8 @@ namespace LatteArt.CoffeeTools.SteamWand
             _hasValidSetup = HasValidSetup();
             if (!_hasValidSetup) return;
 
-            _pointer = new SurfacePointer(pointAction.action, resizeAction.action, settings.BlowStream.CreateRadius());
+            _pointer = new SurfacePointer(
+                pointAction.action, blowAction.action, resizeAction.action, settings.BlowStream.CreateRadius());
             _blowGrowth = settings.BlowStream.CreateGrowth();
         }
 
@@ -67,12 +68,17 @@ namespace LatteArt.CoffeeTools.SteamWand
             _viewCamera = null;
         }
 
+        public void SetPointerBlocked(bool isBlocked)
+        {
+            if (_pointer != null) _pointer.IsBlocked = isBlocked;
+        }
+
         private void Update()
         {
             var simulation = _surface.Simulation;
             if (simulation == null) return;
 
-            _pointer.ResizeFromScroll();
+            _pointer.ReadInput();
             if (!_pointer.TryGetSurfaceUv(_surface, _viewCamera, out var pointerUv))
             {
                 _blowGrowth.Stop();
@@ -83,7 +89,7 @@ namespace LatteArt.CoffeeTools.SteamWand
 
             _surface.ShowBrush(pointerUv, _pointer.Radius);
 
-            if (blowAction.action.IsPressed()) _blowGrowth.Grow(_pointer.Radius, Time.deltaTime);
+            if (_pointer.IsPressed) _blowGrowth.Grow(_pointer.Radius, Time.deltaTime);
             else _blowGrowth.Taper(Time.deltaTime);
 
             if (!_blowGrowth.IsFlowing)

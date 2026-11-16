@@ -202,7 +202,8 @@ Shader "LatteArt/FluidSurface"
                         float visibility = smoothstep(0, BubbleFadeLife, life) *
                             (1 - smoothstep(coverage - BubbleFadeLife, coverage, life));
                         float growth = lerp(BubbleHatchedSize, 1, saturate(life / coverage));
-                        float radius = lerp(BubbleMinRadius, BubbleMaxRadius, Hash(bubbleCell + RadiusHashOffset)) * growth;
+                        float sizeVariation = Hash(bubbleCell + RadiusHashOffset);
+                        float radius = lerp(BubbleMinRadius, BubbleMaxRadius, sizeVariation) * growth;
 
                         float2 bubbleCenter = float2(x, y) + 0.5 + (Hash2(bubbleCell) - 0.5) * BubbleJitter;
                         float distanceToCenter = length(bubbleCenter - local);
@@ -254,7 +255,8 @@ Shader "LatteArt/FluidSurface"
 
                 float firstPhaseWeight = 1 - abs(2 * _FoamPhase - 1);
                 float secondPhaseWeight = 1 - firstPhaseWeight;
-                float normalization = rsqrt(firstPhaseWeight * firstPhaseWeight + secondPhaseWeight * secondPhaseWeight);
+                float normalization = rsqrt(
+                    firstPhaseWeight * firstPhaseWeight + secondPhaseWeight * secondPhaseWeight);
 
                 CarriedFoam foam;
                 foam.coords = SampleFoamCoords(uv);
@@ -354,7 +356,8 @@ Shader "LatteArt/FluidSurface"
 
                 half rimClearance = 1 - smoothstep(_CupRadius - _RimWidth - edgeWidth, _CupRadius, distanceFromCenter);
                 half dye = SampleDye(input.uv) * rimClearance;
-                half3 color = saturate(SurfaceColor(input.uv, distanceFromCenter, dye) * (1 + FoamLight(input.uv) * rimClearance));
+                half3 surfaceColor = SurfaceColor(input.uv, distanceFromCenter, dye);
+                half3 color = saturate(surfaceColor * (1 + FoamLight(input.uv) * rimClearance));
                 color = lerp(color, _BrushColor.rgb, BrushRing(input.uv) * _BrushColor.a);
 
                 half alpha = 1 - smoothstep(_CupRadius - edgeWidth, _CupRadius + edgeWidth, distanceFromCenter);

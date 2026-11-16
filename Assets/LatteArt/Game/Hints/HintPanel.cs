@@ -13,7 +13,10 @@ namespace LatteArt.Hints
         private readonly List<HintRow> _rows = new();
         private UIDocument _document;
         private IReadOnlyList<HintEntry> _entries = Array.Empty<HintEntry>();
+        private bool _isPointerOver;
         private VisualElement _list;
+
+        public event Action<bool> PointerOverChanged;
 
         private void Awake()
         {
@@ -30,11 +33,20 @@ namespace LatteArt.Hints
                 return;
             }
 
+            _list.RegisterCallback<PointerEnterEvent>(OnPointerEnter);
+            _list.RegisterCallback<PointerLeaveEvent>(OnPointerLeave);
             BuildRows();
         }
 
         private void OnDisable()
         {
+            if (_list != null)
+            {
+                _list.UnregisterCallback<PointerEnterEvent>(OnPointerEnter);
+                _list.UnregisterCallback<PointerLeaveEvent>(OnPointerLeave);
+            }
+
+            SetPointerOver(false);
             ClearRows();
             _list = null;
         }
@@ -51,6 +63,24 @@ namespace LatteArt.Hints
 
             ClearRows();
             BuildRows();
+        }
+
+        private void OnPointerEnter(PointerEnterEvent evt)
+        {
+            SetPointerOver(true);
+        }
+
+        private void OnPointerLeave(PointerLeaveEvent evt)
+        {
+            SetPointerOver(false);
+        }
+
+        private void SetPointerOver(bool isPointerOver)
+        {
+            if (isPointerOver == _isPointerOver) return;
+
+            _isPointerOver = isPointerOver;
+            PointerOverChanged?.Invoke(isPointerOver);
         }
 
         private void BuildRows()

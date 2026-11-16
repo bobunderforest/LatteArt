@@ -18,14 +18,35 @@ namespace LatteArt.Hints
         [SerializeField] private string sizeCaption = "Change size";
         [SerializeField] private string sizeKeyLabel = "Mouse wheel";
 
+        private HintPanel _panel;
         private ToolSelector _toolSelector;
+
+        private void Awake()
+        {
+            _panel = GetComponent<HintPanel>();
+        }
+
+        private void OnEnable()
+        {
+            _panel.PointerOverChanged += BlockToolPointer;
+        }
+
+        private void OnDisable()
+        {
+            _panel.PointerOverChanged -= BlockToolPointer;
+        }
 
         private void Start()
         {
             _toolSelector = station != null ? station.ToolSelector : null;
             if (!HasValidSetup()) return;
 
-            GetComponent<HintPanel>().SetEntries(CreateEntries());
+            _panel.SetEntries(CreateEntries());
+        }
+
+        private void BlockToolPointer(bool isPointerOverHints)
+        {
+            if (_toolSelector != null) _toolSelector.SetPointerBlocked(isPointerOverHints);
         }
 
         private List<HintEntry> CreateEntries()

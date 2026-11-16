@@ -12,7 +12,7 @@ namespace LatteArt.Player
         private OutlineHighlight _highlight;
 
         public event Action PickedUp;
-        public event Action Placed;
+        public event Action<PlacementSurface> Placed;
 
         private void Awake()
         {
@@ -52,12 +52,12 @@ namespace LatteArt.Player
             PickedUp?.Invoke();
         }
 
-        public void PlaceAt(Vector3 position, Quaternion rotation)
+        public void PlaceAt(Vector3 position, Quaternion rotation, PlacementSurface surface)
         {
             transform.SetParent(null);
             transform.SetPositionAndRotation(position, rotation);
             SetCollidersEnabled(true);
-            Placed?.Invoke();
+            Placed?.Invoke(surface);
         }
 
         private void SetCollidersEnabled(bool isEnabled)

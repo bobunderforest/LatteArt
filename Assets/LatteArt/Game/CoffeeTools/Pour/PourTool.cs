@@ -40,7 +40,7 @@ namespace LatteArt.CoffeeTools.Pour
             if (!_hasValidSetup) return;
 
             _pointer = new SurfacePointer(
-                pointAction.action, resizeStreamAction.action, settings.Stream.CreateRadius());
+                pointAction.action, pourAction.action, resizeStreamAction.action, settings.Stream.CreateRadius());
             _streamGrowth = settings.Stream.CreateGrowth();
         }
 
@@ -71,12 +71,17 @@ namespace LatteArt.CoffeeTools.Pour
             _viewCamera = null;
         }
 
+        public void SetPointerBlocked(bool isBlocked)
+        {
+            if (_pointer != null) _pointer.IsBlocked = isBlocked;
+        }
+
         private void Update()
         {
             var simulation = _surface.Simulation;
             if (simulation == null) return;
 
-            _pointer.ResizeFromScroll();
+            _pointer.ReadInput();
             if (!_pointer.TryGetSurfaceUv(_surface, _viewCamera, out var pointerUv))
             {
                 _pointerMotion.Reset();
@@ -91,7 +96,7 @@ namespace LatteArt.CoffeeTools.Pour
             _surface.ShowBrush(pointerUv, _pointer.Radius);
 
             var wasFlowing = _streamGrowth.IsFlowing;
-            if (pourAction.action.IsPressed()) _streamGrowth.Grow(_pointer.Radius, deltaTime);
+            if (_pointer.IsPressed) _streamGrowth.Grow(_pointer.Radius, deltaTime);
             else _streamGrowth.Taper(deltaTime);
 
             if (!_streamGrowth.IsFlowing)

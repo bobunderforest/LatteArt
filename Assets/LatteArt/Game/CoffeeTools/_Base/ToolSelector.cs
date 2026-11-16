@@ -86,6 +86,16 @@ namespace LatteArt.CoffeeTools
             }
         }
 
+        public void SetPointerBlocked(bool isBlocked)
+        {
+            if (!_hasValidSetup) return;
+
+            foreach (var slot in slots)
+            {
+                slot.SurfaceTool.SetPointerBlocked(isBlocked);
+            }
+        }
+
         private void Select(int slot)
         {
             if (slot == _selectedSlot) return;
