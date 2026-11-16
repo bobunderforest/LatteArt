@@ -252,6 +252,7 @@ MonoBehaviour:
   cameraRig: {fileID: 0}
   serveAction: {fileID: -8376023215142504473, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resetAction: {fileID: 4543886833105760290, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  leaveAction: {fileID: 6722695027160223399, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &6235573099732361740
 MonoBehaviour:
   m_ObjectHideFlags: 0

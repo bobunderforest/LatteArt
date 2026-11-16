@@ -6,32 +6,22 @@ Each recommend once. No summary, no recap, no "what to do" part repeating steps.
 
 ## Project
 
-Unity 6.3 (`6000.3.10f1`), URP, new Input System (`Assets/InputSystem_Actions.inputactions`).
+Unity 6.3 (`6000.3.10f1`), URP, new Input System (`Assets/LatteArt/Input/InputSystem_Actions.inputactions`).
 Code quality, clear structure, readable git history matter as much as feature.
 
 ## Commands
 
 **No build, no batchmode by default.** User compile, run editor self. After code change, say what changed, stop.
-Run commands below only when asked direct.
+Run Unity from command line only when asked direct.
 
 **Never stage, commit, or push.** User always do `git add`/`commit`/`push` self. Run them only when user ask
 direct in that message.
 
 Unity editor: `"C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Unity.exe"`.
 
-EditMode tests (editor closed, from project root):
-
-```bash
-"C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Unity.exe" -batchmode -projectPath . -runTests -testPlatform EditMode -testResults Logs/TestResults-EditMode.xml -logFile Logs/Tests.log
-```
-
-`PlayMode` instead of `EditMode` for play-mode tests. Unity Test Framework (NUnit), own assembly under
-`Assets/LatteArt/Tests/{EditMode,PlayMode}/`.
-
 ## Architecture
 
 - Logic in plain C# class; `MonoBehaviour` thin adapter wiring Unity (input, transform, rendering) to logic.
-  Logic without `MonoBehaviour` unit-testable in EditMode.
 - Config/tune data in `ScriptableObject` asset, not hardcoded, not loose fields spread over components.
 - Composition over inheritance: small focused components, no deep `MonoBehaviour` hierarchy.
 - No singleton manager by default. Pass dependency via serialized reference or constructor. Truly global
@@ -110,12 +100,12 @@ Standard Microsoft C# convention unless rule below differ.
 
 ## Conventions
 
-- All project content under `Assets/LatteArt/`: `Game/`, `Input/`, `Scenes/`, `Settings/`, `Tests/`.
+- All project content under `Assets/LatteArt/`: `Game/`, `Input/`, `Scenes/`, `Settings/`.
   Third-party assets outside `LatteArt`.
 - Game feature = one subfolder `Game/<Feature>/` (`Game/Fluid/`, `Game/Pour/`) holding all its content: scripts,
   shaders, materials, `SO_` assets, prefabs, textures, audio. No split by asset type.
-- Assembly Definition per area (`LatteArt.Runtime`, `LatteArt.Editor`, `LatteArt.Tests.EditMode`,
-  `LatteArt.Tests.PlayMode`); editor-only code in `Editor/` folder, own asmdef.
+- Assembly Definition per area (`LatteArt.Runtime`, `LatteArt.Editor`); editor-only code in `Editor/` folder,
+  own asmdef.
 - Asset prefix: `PF_` prefab, `SO_` ScriptableObject asset, `M_` material, `T_` texture, `SFX_` audio,
   `SC_` scene.
 - Every asset has `.meta` — commit together; move/rename assets only in Unity editor so GUID survive.

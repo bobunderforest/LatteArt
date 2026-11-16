@@ -21,6 +21,7 @@ namespace LatteArt.CoffeeServing
         [Header("Input")]
         [SerializeField] private InputActionReference serveAction;
         [SerializeField] private InputActionReference resetAction;
+        [SerializeField] private InputActionReference leaveAction;
 
         private GameObject _emptyCup;
         private bool _hasValidSetup;
@@ -38,6 +39,7 @@ namespace LatteArt.CoffeeServing
         public ToolSelector ToolSelector => _toolSelector;
         public InputAction ServeAction => serveAction != null ? serveAction.action : null;
         public InputAction ResetAction => resetAction != null ? resetAction.action : null;
+        public InputAction LeaveAction => leaveAction != null ? leaveAction.action : null;
         public bool CanPlaceCup => _hasValidSetup && _emptyCup == null && _latte == null;
         public bool CanPourCoffee => _hasValidSetup && _emptyCup != null;
 
@@ -71,6 +73,7 @@ namespace LatteArt.CoffeeServing
         {
             if (serveAction.action.WasPressedThisFrame()) TryServe();
             else if (resetAction.action.WasPressedThisFrame()) TryResetSurface();
+            else if (leaveAction.action.WasPressedThisFrame()) TryLeave();
         }
 
         public void SetHovered(bool isHovered)
@@ -99,6 +102,14 @@ namespace LatteArt.CoffeeServing
 
             _latte.Surface.ResetSimulation();
             SurfaceReset?.Invoke();
+            return true;
+        }
+
+        public bool TryLeave()
+        {
+            if (!_isInUse) return false;
+
+            Leave();
             return true;
         }
 
@@ -190,7 +201,7 @@ namespace LatteArt.CoffeeServing
         {
             if (cupAnchor != null && emptyCupPrefab != null && drawableLattePrefab != null &&
                 servedLattePrefab != null && cameraRig != null && _toolSelector != null &&
-                serveAction != null && resetAction != null)
+                serveAction != null && resetAction != null && leaveAction != null)
             {
                 return true;
             }

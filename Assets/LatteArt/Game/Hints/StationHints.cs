@@ -14,6 +14,7 @@ namespace LatteArt.Hints
         [Header("Captions")]
         [SerializeField] private string serveCaption = "Complete";
         [SerializeField] private string resetCaption = "Reset";
+        [SerializeField] private string leaveCaption = "Leave";
         [SerializeField] private string sizeCaption = "Change size";
         [SerializeField] private string sizeKeyLabel = "Mouse wheel";
 
@@ -39,6 +40,8 @@ namespace LatteArt.Hints
                 () => station.TryServe()));
             entries.Add(new HintEntry(HintKeyLabel.For(station.ResetAction), resetCaption,
                 () => station.TryResetSurface()));
+            entries.Add(new HintEntry(HintKeyLabel.For(station.LeaveAction), leaveCaption,
+                () => station.TryLeave()));
             entries.Add(new HintEntry(sizeKeyLabel, sizeCaption,
                 readSlider: ReadSelectedToolSize, writeSlider: ResizeSelectedTool));
             return entries;
@@ -66,7 +69,7 @@ namespace LatteArt.Hints
         private bool HasValidSetup()
         {
             if (station == null || _toolSelector == null || station.ServeAction == null ||
-                station.ResetAction == null || !HasNamedSlots())
+                station.ResetAction == null || station.LeaveAction == null || !HasNamedSlots())
             {
                 Debug.LogError("StationHints has unassigned references or tool slots without a name.", this);
                 return false;

@@ -178,7 +178,7 @@ Shader "LatteArt/FluidSky"
                     float3 axis = VortexAxis(i, time);
                     float distanceFromCore = 1 - dot(twisted, axis);
                     float influence = exp(-distanceFromCore / _VortexRadius);
-                    float spinDirection = i % 2 == 0 ? 1 : -1;
+                    float spinDirection = (i & 1) == 0 ? 1 : -1;
                     float pulse = 1 + _VortexPulse * sin(time * 3 + i * 1.7);
                     twisted = RotateAround(twisted, axis, influence * _VortexStrength * pulse * spinDirection);
                 }

@@ -1832,17 +1832,6 @@ Transform:
   - {fileID: 267854050}
   m_Father: {fileID: 219095714}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &247668394 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6235573099732361740, guid: b973d2d8d78e5824ebc3637a0f5594bf, type: 3}
-  m_PrefabInstance: {fileID: 1428801988}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d61cf9f00bcc614ea1c751c7fb9a961, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Tools.ToolSelector
 --- !u!114 &247668395 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4544960383392721854, guid: b973d2d8d78e5824ebc3637a0f5594bf, type: 3}
@@ -3352,7 +3341,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Hints.StationHints
   station: {fileID: 247668395}
-  toolSelector: {fileID: 247668394}
   serveCaption: Complete
   resetCaption: Reset
   sizeCaption: Change size
@@ -4076,6 +4064,7 @@ GameObject:
   - component: {fileID: 600240842}
   - component: {fileID: 600240844}
   - component: {fileID: 600240845}
+  - component: {fileID: 600240846}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -4171,6 +4160,19 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 1da8089d11c7a304385b8f324b7a6bd3, type: 2}
   rayOrigin: {fileID: 1768262421}
   holdAnchor: {fileID: 1303747426}
+--- !u!114 &600240846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600240840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea3402f88c2caa94e83b86c36491b087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Player.FirstPersonQuit
+  quitAction: {fileID: -7085851618593710273, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1001 &603503771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10020,6 +10022,9 @@ MonoBehaviour:
   - action: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: Mouse
     caption: Look
+  - action: {fileID: -7085851618593710273, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    keyOverride: 
+    caption: Quit
 --- !u!1001 &1245546452
 PrefabInstance:
   m_ObjectHideFlags: 0
