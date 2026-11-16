@@ -134,18 +134,24 @@ namespace LatteArt.Fluid
             _correctDyeKernel = shader.FindKernel("CorrectDye");
             _advectFoamCoordsKernel = shader.FindKernel("AdvectFoamCoords");
 
-            _velocity = new PingPongTexture(_resolution, GraphicsFormat.R16G16_SFloat, "FluidVelocity");
-            _stir = new PingPongTexture(_resolution, GraphicsFormat.R16G16_SFloat, "FluidStir");
-            var sinkFormat = FluidTexture.FilterableFormat(GraphicsFormat.R32_SFloat, GraphicsFormat.R16_SFloat);
-            var foamCoordsFormat = FluidTexture.FilterableFormat(
+            var vectorFormat = FluidTexture.WritableFilterableFormat(
+                GraphicsFormat.R16G16_SFloat, GraphicsFormat.R16G16B16A16_SFloat);
+            var sinkFormat = FluidTexture.WritableFilterableFormat(
+                GraphicsFormat.R32_SFloat, GraphicsFormat.R16_SFloat, GraphicsFormat.R16G16B16A16_SFloat);
+            var dyeFormat = FluidTexture.WritableFilterableFormat(
+                GraphicsFormat.R16_SFloat, GraphicsFormat.R16G16B16A16_SFloat);
+            var foamCoordsFormat = FluidTexture.WritableFilterableFormat(
                 GraphicsFormat.R32G32B32A32_SFloat, GraphicsFormat.R16G16B16A16_SFloat);
+
+            _velocity = new PingPongTexture(_resolution, vectorFormat, "FluidVelocity");
+            _stir = new PingPongTexture(_resolution, vectorFormat, "FluidStir");
             _sink = new PingPongTexture(_resolution, sinkFormat, "FluidSink");
-            _dye = new PingPongTexture(_resolution, GraphicsFormat.R16_SFloat, "FluidDye");
+            _dye = new PingPongTexture(_resolution, dyeFormat, "FluidDye");
             _foamCoords = new PingPongTexture(_resolution, foamCoordsFormat, "FluidFoamCoords");
             _pressure = FluidTexture.Create(_resolution, GraphicsFormat.R32_SFloat, "FluidPressure");
             _divergence = FluidTexture.Create(_resolution, GraphicsFormat.R32_SFloat, "FluidDivergence");
-            _dyeForward = FluidTexture.Create(_resolution, GraphicsFormat.R16_SFloat, "FluidDyeForward");
-            _dyeBackward = FluidTexture.Create(_resolution, GraphicsFormat.R16_SFloat, "FluidDyeBackward");
+            _dyeForward = FluidTexture.Create(_resolution, dyeFormat, "FluidDyeForward");
+            _dyeBackward = FluidTexture.Create(_resolution, dyeFormat, "FluidDyeBackward");
             _divergencePartialSums = new GraphicsBuffer(
                 GraphicsBuffer.Target.Structured, _threadGroups * _threadGroups, DivergenceSumStride);
             _divergenceTotal = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 1, DivergenceSumStride);
@@ -240,6 +246,13 @@ namespace LatteArt.Fluid
             AdvectFoamCoords(deltaTime);
             AdvectVelocity();
             SettleStir(deltaTime);
+        }
+
+        public void WarmUpToolKernels()
+        {
+            AddForce(CupCenterUv, CupCenterUv, Vector2.zero, TexelSize);
+            Stir(CupCenterUv, CupCenterUv, Vector2.zero, TexelSize, 0f);
+            InjectMilk(CupCenterUv, CupCenterUv, 0f);
         }
 
         public void ExecuteRecordedCommands()

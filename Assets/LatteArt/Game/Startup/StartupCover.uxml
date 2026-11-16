@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="StartupCover.uss" />
+    <ui:VisualElement name="startup-cover" class="startup-cover" />
+</ui:UXML>

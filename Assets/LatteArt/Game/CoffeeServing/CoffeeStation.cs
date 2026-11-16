@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using LatteArt.CameraUtils;
 using LatteArt.CoffeeTools;
 using LatteArt.Player;
@@ -27,6 +28,8 @@ namespace LatteArt.CoffeeServing
         private bool _hasValidSetup;
         private Interactor _interactor;
         private bool _isInUse;
+        private bool _isLattePoured;
+        private bool _isWarmedUp;
         private DrawableLatte _latte;
         private FirstPersonController _playerController;
         private ToolSelector _toolSelector;
@@ -34,14 +37,16 @@ namespace LatteArt.CoffeeServing
         public event Action CupPlaced;
         public event Action SurfaceReset;
         public event Action<bool> InUseChanged;
+        public event Action WarmedUp;
 
         public bool IsInUse => _isInUse;
+        public bool IsWarmedUp => _isWarmedUp;
         public ToolSelector ToolSelector => _toolSelector;
         public InputAction ServeAction => serveAction != null ? serveAction.action : null;
         public InputAction ResetAction => resetAction != null ? resetAction.action : null;
         public InputAction LeaveAction => leaveAction != null ? leaveAction.action : null;
-        public bool CanPlaceCup => _hasValidSetup && _emptyCup == null && _latte == null;
-        public bool CanPourCoffee => _hasValidSetup && _emptyCup != null;
+        public bool CanPlaceCup => _hasValidSetup && _emptyCup == null && !_isLattePoured;
+        public bool CanPourCoffee => _hasValidSetup && _emptyCup != null && _latte != null;
 
         private void Awake()
         {
@@ -50,6 +55,24 @@ namespace LatteArt.CoffeeServing
             if (!_hasValidSetup) return;
 
             _toolSelector.Deactivate();
+        }
+
+        private IEnumerator Start()
+        {
+            yield return WarmUpLatte();
+            _isWarmedUp = true;
+            WarmedUp?.Invoke();
+        }
+
+        private IEnumerator WarmUpLatte()
+        {
+            _latte = Instantiate(drawableLattePrefab, cupAnchor);
+            _latte.BeginWarmUp();
+            yield return null;
+            yield return new WaitForEndOfFrame();
+
+            _latte.EndWarmUp();
+            if (!_isLattePoured) _latte.gameObject.SetActive(false);
         }
 
         private void OnEnable()
@@ -78,12 +101,12 @@ namespace LatteArt.CoffeeServing
 
         public void SetHovered(bool isHovered)
         {
-            if (_latte != null) _latte.SetHighlighted(isHovered && !_isInUse);
+            if (_isLattePoured) _latte.SetHighlighted(isHovered && !_isInUse);
         }
 
         public void Interact(Interactor interactor)
         {
-            if (!_hasValidSetup || _isInUse || _latte == null) return;
+            if (!_hasValidSetup || _isInUse || !_isLattePoured) return;
 
             Enter(interactor);
         }
@@ -128,7 +151,9 @@ namespace LatteArt.CoffeeServing
 
             Destroy(_emptyCup);
             _emptyCup = null;
-            _latte = Instantiate(drawableLattePrefab, cupAnchor);
+            _isLattePoured = true;
+            _latte.gameObject.SetActive(true);
+            _latte.Surface.ResetSimulation();
             return true;
         }
 
@@ -176,8 +201,8 @@ namespace LatteArt.CoffeeServing
             Leave();
 
             var snapshot = _latte.Surface.TakeSnapshot();
-            Destroy(_latte.gameObject);
-            _latte = null;
+            _isLattePoured = false;
+            _latte.gameObject.SetActive(false);
             if (snapshot == null) return;
 
             var servedLatte = Instantiate(servedLattePrefab, cupAnchor.position, cupAnchor.rotation);

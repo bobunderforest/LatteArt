@@ -15,6 +15,12 @@ namespace LatteArt.Player
         private void Awake()
         {
             _controller = GetComponent<FirstPersonController>();
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                enabled = false;
+                return;
+            }
+
             if (quitAction != null) return;
 
             Debug.LogError("FirstPersonQuit has no quit action assigned.", this);

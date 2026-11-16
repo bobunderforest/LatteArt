@@ -55,6 +55,11 @@ namespace LatteArt.Fluid
             _unsimulatedTime = 0f;
         }
 
+        public void WarmUp()
+        {
+            if (_simulation != null) _simulation.WarmUpToolKernels();
+        }
+
         public FluidSnapshot TakeSnapshot()
         {
             if (_simulation == null) return null;

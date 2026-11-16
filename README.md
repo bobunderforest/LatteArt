@@ -29,6 +29,10 @@ Game code lives in `Assets/LatteArt/Game/`, one folder per feature, in the `Latt
 - **Hints** — UI Toolkit panels. `HintPanel` is a pure view over `HintEntry` data. `StaticHints` and
   `StationHints` build entries from their owners' input actions, so bindings are defined once.
 - **Audio** — listeners play sounds on gameplay events.
+- **Compatibility** — `ComputeSupportNotice` tells players when their browser can't run compute shaders.
+
+The Web build targets WebGPU, because the fluid simulation needs compute shaders. WebGL 2 stays as a fallback that
+shows the notice.
 
 ### Principles
 

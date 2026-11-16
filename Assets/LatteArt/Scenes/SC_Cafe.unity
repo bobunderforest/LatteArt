@@ -3343,6 +3343,7 @@ MonoBehaviour:
   station: {fileID: 247668395}
   serveCaption: Complete
   resetCaption: Reset
+  leaveCaption: Leave
   sizeCaption: Change size
   sizeKeyLabel: Mouse wheel
 --- !u!1 &482075575 stripped
@@ -4096,7 +4097,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 600240840}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 142e599441856784683a91b942f301c6, type: 3}
   m_Name: 
@@ -6009,7 +6010,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 9634288f8d3fc6d47ad7f38b7fcadf8a, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c2cb248eb4874e34d9a247bd9ffa7770, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.075
   m_Pitch: 1
   Loop: 1
@@ -7087,6 +7088,80 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -629719859055844128, guid: 0d9a071234fb7214aac05d31ef866257, type: 3}
+--- !u!1 &874412893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 874412895}
+  - component: {fileID: 874412894}
+  - component: {fileID: 874412896}
+  m_Layer: 0
+  m_Name: StartupCover
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &874412894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874412893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 81e1043decc331c429318c70781bf5bb, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: aff07614dfb58c44b8de4389e393b789, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &874412895
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874412893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &874412896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874412893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56efb6b1777133a459439ef8f391c682, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Startup.StartupCover
+  coffeeStation: {fileID: 247668395}
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  enabledOnFade:
+  - {fileID: 600240842}
+  playedOnFade:
+  - {fileID: 717018907}
 --- !u!1001 &875070463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8034,6 +8109,74 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1211141288747244480, guid: 5694f18ffe599954a9e6ec0a17a7af68, type: 3}
   m_PrefabInstance: {fileID: 1921691337}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &989894579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 989894581}
+  - component: {fileID: 989894580}
+  - component: {fileID: 989894582}
+  m_Layer: 0
+  m_Name: ComputeSupportNotice
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &989894580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989894579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 81e1043decc331c429318c70781bf5bb, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 2bf849dbb39c87348ae69b5f37f5dd30, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &989894581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989894579}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.10311, y: 1.32972, z: -1.55658}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &989894582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989894579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aefb85d577f25940abcb615388130af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LatteArt.Runtime::LatteArt.Compatibility.ComputeSupportNotice
 --- !u!1001 &990091526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10016,15 +10159,19 @@ MonoBehaviour:
   - action: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: 
     caption: Interact
+    isHiddenOnWeb: 0
   - action: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: WASD
     caption: Move
+    isHiddenOnWeb: 0
   - action: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: Mouse
     caption: Look
+    isHiddenOnWeb: 0
   - action: {fileID: -7085851618593710273, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: 
     caption: Quit
+    isHiddenOnWeb: 1
 --- !u!1001 &1245546452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14483,7 +14630,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 2
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -17297,3 +17444,5 @@ SceneRoots:
   - {fileID: 711550331}
   - {fileID: 717018908}
   - {fileID: 594789902}
+  - {fileID: 989894581}
+  - {fileID: 874412895}

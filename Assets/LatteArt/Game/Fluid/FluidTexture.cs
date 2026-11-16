@@ -26,9 +26,18 @@ namespace LatteArt.Fluid
             return copy;
         }
 
-        public static GraphicsFormat FilterableFormat(GraphicsFormat preferred, GraphicsFormat fallback)
+        public static GraphicsFormat WritableFilterableFormat(params GraphicsFormat[] candidates)
         {
-            return SystemInfo.IsFormatSupported(preferred, GraphicsFormatUsage.Linear) ? preferred : fallback;
+            foreach (var format in candidates)
+            {
+                if (SystemInfo.IsFormatSupported(format, GraphicsFormatUsage.LoadStore) &&
+                    SystemInfo.IsFormatSupported(format, GraphicsFormatUsage.Linear))
+                {
+                    return format;
+                }
+            }
+
+            return candidates[candidates.Length - 1];
         }
 
         public static void Release(RenderTexture texture)

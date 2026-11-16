@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LatteArt.Hints
@@ -11,10 +12,13 @@ namespace LatteArt.Hints
         {
             if (!HasValidSetup()) return;
 
-            var entries = new HintEntry[hints.Length];
-            for (var i = 0; i < hints.Length; i++)
+            var isWeb = Application.platform == RuntimePlatform.WebGLPlayer;
+            var entries = new List<HintEntry>(hints.Length);
+            foreach (var hint in hints)
             {
-                entries[i] = new HintEntry(hints[i].GetKeyLabel(), hints[i].Caption);
+                if (isWeb && hint.IsHiddenOnWeb) continue;
+
+                entries.Add(new HintEntry(hint.GetKeyLabel(), hint.Caption));
             }
 
             GetComponent<HintPanel>().SetEntries(entries);

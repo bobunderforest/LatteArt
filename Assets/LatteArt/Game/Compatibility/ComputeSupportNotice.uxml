@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="ComputeSupportNotice.uss" />
+    <ui:VisualElement class="notice" picking-mode="Ignore">
+        <ui:Label class="notice__text" picking-mode="Ignore"
+            text="This browser can't run the latte simulation. Open the page in a browser with WebGPU, such as current Chrome or Edge." />
+    </ui:VisualElement>
+</ui:UXML>
