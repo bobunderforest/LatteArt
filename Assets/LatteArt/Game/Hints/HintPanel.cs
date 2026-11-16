@@ -1,5 +1,6 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace LatteArt.Hints
@@ -8,34 +9,19 @@ namespace LatteArt.Hints
     public sealed class HintPanel : MonoBehaviour
     {
         private const string ListName = "hint-list";
-        private const string RowClass = "hint";
-        private const string HighlightedRowClass = "hint--highlighted";
-        private const string KeyClass = "hint__key";
-        private const string CaptionClass = "hint__caption";
 
-        [SerializeField] private Hint[] hints = { };
-
+        private readonly List<HintRow> _rows = new();
         private UIDocument _document;
-        private bool _hasValidSetup;
-        private InputAction _highlightedAction;
+        private IReadOnlyList<HintEntry> _entries = Array.Empty<HintEntry>();
         private VisualElement _list;
-        private VisualElement[] _rows;
 
         private void Awake()
         {
             _document = GetComponent<UIDocument>();
-            _rows = new VisualElement[hints.Length];
-            _hasValidSetup = HasValidSetup();
         }
 
         private void OnEnable()
         {
-            if (!_hasValidSetup)
-            {
-                enabled = false;
-                return;
-            }
-
             _list = _document.rootVisualElement.Q(ListName);
             if (_list == null)
             {
@@ -44,65 +30,53 @@ namespace LatteArt.Hints
                 return;
             }
 
-            for (var i = 0; i < hints.Length; i++)
-            {
-                _rows[i] = CreateRow(hints[i]);
-                _list.Add(_rows[i]);
-            }
-
-            ApplyHighlight();
+            BuildRows();
         }
 
         private void OnDisable()
         {
-            _list?.Clear();
+            ClearRows();
             _list = null;
         }
 
-        public void Highlight(InputAction action)
+        private void Update()
         {
-            _highlightedAction = action;
-            ApplyHighlight();
+            RefreshRows();
         }
 
-        private void ApplyHighlight()
+        public void SetEntries(IReadOnlyList<HintEntry> entries)
         {
+            _entries = entries;
             if (_list == null) return;
 
-            for (var i = 0; i < hints.Length; i++)
+            ClearRows();
+            BuildRows();
+        }
+
+        private void BuildRows()
+        {
+            foreach (var entry in _entries)
             {
-                _rows[i].EnableInClassList(HighlightedRowClass, hints[i].IsFor(_highlightedAction));
+                var row = new HintRow(entry);
+                _rows.Add(row);
+                _list.Add(row);
+            }
+
+            RefreshRows();
+        }
+
+        private void RefreshRows()
+        {
+            foreach (var row in _rows)
+            {
+                row.Refresh();
             }
         }
 
-        private static VisualElement CreateRow(Hint hint)
+        private void ClearRows()
         {
-            var row = new VisualElement();
-            row.AddToClassList(RowClass);
-            row.Add(CreateLabel(hint.GetKeyLabel(), KeyClass));
-            row.Add(CreateLabel(hint.Caption, CaptionClass));
-            return row;
-        }
-
-        private static Label CreateLabel(string text, string styleClass)
-        {
-            var label = new Label(text);
-            label.AddToClassList(styleClass);
-            return label;
-        }
-
-        private bool HasValidSetup()
-        {
-            var hasAllHintsAssigned = hints.Length > 0;
-            foreach (var hint in hints)
-            {
-                hasAllHintsAssigned &= hint != null && hint.IsAssigned;
-            }
-
-            if (hasAllHintsAssigned) return true;
-
-            Debug.LogError("HintPanel has hints without an action or caption.", this);
-            return false;
+            _rows.Clear();
+            _list?.Clear();
         }
     }
 }

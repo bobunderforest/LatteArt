@@ -24,6 +24,8 @@
     font-size: 16px;
     -unity-font-style: bold;
     -unity-text-align: middle-center;
+    transition-property: background-color, border-color, color, scale;
+    transition-duration: 0.1s;
 }
 
 .hint__caption {
@@ -32,6 +34,34 @@
     color: rgb(255, 255, 255);
     font-size: 16px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    transition-property: color;
+    transition-duration: 0.1s;
+}
+
+.hint--clickable:hover > .hint__key {
+    border-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: rgb(40, 25, 15);
+    scale: 1.08 1.08;
+}
+
+.hint--clickable:hover > .hint__caption {
+    color: rgb(255, 240, 215);
+}
+
+.hint__slider {
+    width: 120px;
+    height: 12px;
+    margin-left: 12px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+}
+
+.hint__slider-fill {
+    height: 100%;
+    width: 50%;
+    background-color: rgb(255, 255, 255);
 }
 
 .hint--highlighted > .hint__key {
@@ -42,4 +72,10 @@
 .hint--highlighted > .hint__caption {
     color: rgb(255, 210, 120);
     -unity-font-style: bold;
+}
+
+.hint--highlighted.hint--clickable:hover > .hint__key {
+    border-color: rgb(255, 235, 190);
+    background-color: rgba(225, 155, 70, 0.95);
+    color: rgb(255, 255, 255);
 }

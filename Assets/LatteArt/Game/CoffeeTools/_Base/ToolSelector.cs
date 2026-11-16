@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using LatteArt.Fluid;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace LatteArt.CoffeeTools
 {
@@ -15,8 +15,11 @@ namespace LatteArt.CoffeeTools
         private bool _hasValidSetup;
         private int _selectedSlot;
 
-        public event Action<InputAction> ToolSelected;
         public event Action ToolSwitched;
+
+        public IReadOnlyList<ToolSlot> Slots => slots;
+        public int SelectedSlot => _selectedSlot;
+        public ISurfaceTool SelectedTool => _hasValidSetup ? slots[_selectedSlot].SurfaceTool : null;
 
         private void Awake()
         {
@@ -35,7 +38,7 @@ namespace LatteArt.CoffeeTools
                 return;
             }
 
-            ApplySelection();
+            EnableOnly(_selectedSlot);
         }
 
         private void OnDisable()
@@ -49,12 +52,16 @@ namespace LatteArt.CoffeeTools
         {
             for (var i = 0; i < slots.Length; i++)
             {
-                if (i == _selectedSlot || !slots[i].SelectAction.action.WasPressedThisFrame()) continue;
-
-                _selectedSlot = i;
-                ApplySelection();
-                ToolSwitched?.Invoke();
+                if (slots[i].SelectAction.action.WasPressedThisFrame()) Select(i);
             }
+        }
+
+        public bool TrySelect(int slot)
+        {
+            if (!enabled || slot < 0 || slot >= slots.Length) return false;
+
+            Select(slot);
+            return true;
         }
 
         public void Activate(FluidSurface surface, Camera viewCamera)
@@ -66,6 +73,7 @@ namespace LatteArt.CoffeeTools
                 slot.SurfaceTool.Attach(surface, viewCamera);
             }
 
+            _selectedSlot = initialSlot;
             enabled = true;
         }
 
@@ -78,10 +86,13 @@ namespace LatteArt.CoffeeTools
             }
         }
 
-        private void ApplySelection()
+        private void Select(int slot)
         {
+            if (slot == _selectedSlot) return;
+
+            _selectedSlot = slot;
             EnableOnly(_selectedSlot);
-            ToolSelected?.Invoke(slots[_selectedSlot].SelectAction.action);
+            ToolSwitched?.Invoke();
         }
 
         private void EnableOnly(int slotToEnable)

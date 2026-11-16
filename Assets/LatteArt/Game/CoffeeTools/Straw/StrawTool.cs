@@ -25,6 +25,15 @@ namespace LatteArt.CoffeeTools.Straw
         public bool IsActive => _isStroking;
         public float Intensity => _isStroking ? Mathf.Clamp01(_tipVelocity.magnitude / settings.LoudestStirSpeed) : 0f;
 
+        public float NormalizedRadius
+        {
+            get => _pointer != null ? _pointer.NormalizedRadius : 0f;
+            set
+            {
+                if (_pointer != null) _pointer.NormalizedRadius = value;
+            }
+        }
+
         private void Awake()
         {
             _hasValidSetup = HasValidSetup();

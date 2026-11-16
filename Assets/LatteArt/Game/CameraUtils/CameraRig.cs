@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace LatteArt.CameraUtils
@@ -14,8 +15,11 @@ namespace LatteArt.CameraUtils
 
         private CameraBlend _blend;
         private bool _hasValidSetup;
+        private bool _isStationArrivalPending;
         private float _target;
         private Camera _viewCamera;
+
+        public event Action StationReached;
 
         public Camera ViewCamera => _viewCamera;
 
@@ -38,17 +42,26 @@ namespace LatteArt.CameraUtils
         public void BlendToFirstPerson()
         {
             _target = 0f;
+            _isStationArrivalPending = false;
         }
 
         public void BlendToStation()
         {
             _target = 1f;
+            _isStationArrivalPending = true;
         }
 
         private void LateUpdate()
         {
             _blend.Advance(Time.deltaTime, _target);
             ApplyBlend();
+            if (_isStationArrivalPending && _blend.Progress >= 1f) ReachStation();
+        }
+
+        private void ReachStation()
+        {
+            _isStationArrivalPending = false;
+            StationReached?.Invoke();
         }
 
         private void ApplyBlend()

@@ -250,6 +250,7 @@ MonoBehaviour:
   drawableLattePrefab: {fileID: 629837719610870967, guid: 82a557492b22cf24980321c7366254b9, type: 3}
   servedLattePrefab: {fileID: 6621924982654631979, guid: 7d6690010176dba42a1eacc1bb1a7ed5, type: 3}
   cameraRig: {fileID: 0}
+  serveAction: {fileID: -8376023215142504473, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resetAction: {fileID: 4543886833105760290, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &6235573099732361740
 MonoBehaviour:
@@ -266,10 +267,13 @@ MonoBehaviour:
   slots:
   - tool: {fileID: 5563954321567224488}
     selectAction: {fileID: 7903166510273518912, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    displayName: Milk
   - tool: {fileID: 1567284388202799765}
     selectAction: {fileID: 999351806976023328, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    displayName: Needle
   - tool: {fileID: 1108550880293177342}
     selectAction: {fileID: -4664319228366750792, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    displayName: Steam Wand
   initialSlot: 0
 --- !u!114 &1447547337817998448
 MonoBehaviour:
@@ -286,8 +290,6 @@ MonoBehaviour:
   emitter: {fileID: 11400000, guid: c0b37c41b57eb4b4ea24ecd64514129c, type: 2}
   cupPlacedSound: {fileID: 6418180475301049370, guid: eded78bfed3b46548bf9c3e802f9f30c, type: 2}
   surfaceResetSound: {fileID: 6418180475301049370, guid: bde67f3cc9e76fa48aac4a8ba903a7d6, type: 2}
-  enterSound: {fileID: 0}
-  leaveSound: {fileID: 0}
   toolSwitchSound: {fileID: 6418180475301049370, guid: 4396f4d13ffe8834baaf675e950fd1ee, type: 2}
 --- !u!1 &9126619412344571883
 GameObject:

@@ -18,6 +18,12 @@ namespace LatteArt.CoffeeTools
 
         public float Radius { get; private set; }
 
+        public float NormalizedRadius
+        {
+            get => Mathf.InverseLerp(Mathf.Log(_minRadius), Mathf.Log(_maxRadius), Mathf.Log(Radius));
+            set => Radius = Mathf.Exp(Mathf.Lerp(Mathf.Log(_minRadius), Mathf.Log(_maxRadius), Mathf.Clamp01(value)));
+        }
+
         public void Resize(float scrollNotches)
         {
             Radius = Mathf.Clamp(Radius * Mathf.Pow(_resizeFactor, scrollNotches), _minRadius, _maxRadius);

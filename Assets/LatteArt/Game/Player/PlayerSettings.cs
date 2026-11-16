@@ -8,6 +8,7 @@ namespace LatteArt.Player
         [Header("Movement")]
         [SerializeField, Min(0f)] private float walkSpeed = 2f;
         [SerializeField, Range(0f, 0.5f)] private float moveSmoothTime = 0.1f;
+        [SerializeField, Min(0.1f)] private float maxFallDistance = 10f;
 
         [Header("Interaction")]
         [SerializeField, Min(0f)] private float interactRange = 1.5f;
@@ -23,6 +24,7 @@ namespace LatteArt.Player
 
         public float WalkSpeed => walkSpeed;
         public float MoveSmoothTime => moveSmoothTime;
+        public float MaxFallDistance => maxFallDistance;
         public float LookDegreesPerPixel => lookDegreesPerPixel;
         public float InteractRange => interactRange;
         public LayerMask InteractLayers => interactLayers;

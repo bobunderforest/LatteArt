@@ -25,6 +25,15 @@ namespace LatteArt.CoffeeTools.Pour
         public bool IsActive => _streamGrowth != null && _streamGrowth.IsFlowing;
         public float Intensity => IsActive ? Mathf.Clamp01(_streamGrowth.Radius / settings.Stream.MaxRadius) : 0f;
 
+        public float NormalizedRadius
+        {
+            get => _pointer != null ? _pointer.NormalizedRadius : 0f;
+            set
+            {
+                if (_pointer != null) _pointer.NormalizedRadius = value;
+            }
+        }
+
         private void Awake()
         {
             _hasValidSetup = HasValidSetup();

@@ -61,6 +61,36 @@ namespace LatteArt.Tests.EditMode
         }
 
         [Test]
+        public void NormalizedRadius_AtLimits_IsZeroAndOne()
+        {
+            var radius = new ToolRadius(MinRadius, MinRadius, MaxRadius, ResizeFactor);
+            Assert.That(radius.NormalizedRadius, Is.EqualTo(0f).Within(Tolerance));
+
+            radius.Resize(10f);
+            Assert.That(radius.NormalizedRadius, Is.EqualTo(1f).Within(Tolerance));
+        }
+
+        [Test]
+        public void NormalizedRadius_Half_IsGeometricMeanOfLimits()
+        {
+            var radius = new ToolRadius(0.05f, MinRadius, MaxRadius, ResizeFactor);
+
+            radius.NormalizedRadius = 0.5f;
+
+            Assert.That(radius.Radius, Is.EqualTo(UnityEngine.Mathf.Sqrt(MinRadius * MaxRadius)).Within(Tolerance));
+        }
+
+        [Test]
+        public void NormalizedRadius_OutOfRange_ClampsToLimits()
+        {
+            var radius = new ToolRadius(0.05f, MinRadius, MaxRadius, ResizeFactor);
+
+            radius.NormalizedRadius = 2f;
+
+            Assert.That(radius.Radius, Is.EqualTo(MaxRadius).Within(Tolerance));
+        }
+
+        [Test]
         public void Resize_NoScroll_KeepsRadius()
         {
             var radius = new ToolRadius(0.05f, MinRadius, MaxRadius, ResizeFactor);

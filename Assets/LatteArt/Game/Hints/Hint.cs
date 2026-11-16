@@ -7,8 +7,6 @@ namespace LatteArt.Hints
     [Serializable]
     public sealed class Hint
     {
-        private const string BindingGroup = "Keyboard&Mouse";
-
         [SerializeField] private InputActionReference action;
         [SerializeField] private string keyOverride = "";
         [SerializeField] private string caption = "";
@@ -18,16 +16,9 @@ namespace LatteArt.Hints
 
         private bool HasKeyOverride => !string.IsNullOrEmpty(keyOverride);
 
-        public bool IsFor(InputAction inputAction)
-        {
-            return action != null && inputAction != null && action.action == inputAction;
-        }
-
         public string GetKeyLabel()
         {
-            return HasKeyOverride
-                ? keyOverride
-                : action.action.GetBindingDisplayString(InputBinding.MaskByGroup(BindingGroup));
+            return HasKeyOverride ? keyOverride : HintKeyLabel.For(action.action);
         }
     }
 }

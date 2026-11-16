@@ -19,6 +19,7 @@ namespace LatteArt.CoffeeServing
         [SerializeField] private CameraRig cameraRig;
 
         [Header("Input")]
+        [SerializeField] private InputActionReference serveAction;
         [SerializeField] private InputActionReference resetAction;
 
         private GameObject _emptyCup;
@@ -34,6 +35,9 @@ namespace LatteArt.CoffeeServing
         public event Action<bool> InUseChanged;
 
         public bool IsInUse => _isInUse;
+        public ToolSelector ToolSelector => _toolSelector;
+        public InputAction ServeAction => serveAction != null ? serveAction.action : null;
+        public InputAction ResetAction => resetAction != null ? resetAction.action : null;
         public bool CanPlaceCup => _hasValidSetup && _emptyCup == null && _latte == null;
         public bool CanPourCoffee => _hasValidSetup && _emptyCup != null;
 
@@ -48,20 +52,25 @@ namespace LatteArt.CoffeeServing
 
         private void OnEnable()
         {
-            if (!_hasValidSetup) enabled = false;
+            if (!_hasValidSetup)
+            {
+                enabled = false;
+                return;
+            }
+
+            cameraRig.StationReached += ActivateTools;
         }
 
         private void OnDisable()
         {
             if (_isInUse) Leave();
+            if (cameraRig != null) cameraRig.StationReached -= ActivateTools;
         }
 
         private void Update()
         {
-            if (!_isInUse || !resetAction.action.WasPressedThisFrame()) return;
-
-            _latte.Surface.ResetSimulation();
-            SurfaceReset?.Invoke();
+            if (serveAction.action.WasPressedThisFrame()) TryServe();
+            else if (resetAction.action.WasPressedThisFrame()) TryResetSurface();
         }
 
         public void SetHovered(bool isHovered)
@@ -71,10 +80,26 @@ namespace LatteArt.CoffeeServing
 
         public void Interact(Interactor interactor)
         {
-            if (!_hasValidSetup) return;
+            if (!_hasValidSetup || _isInUse || _latte == null) return;
 
-            if (_isInUse) Serve();
-            else if (_latte != null) Enter(interactor);
+            Enter(interactor);
+        }
+
+        public bool TryServe()
+        {
+            if (!_isInUse) return false;
+
+            Serve();
+            return true;
+        }
+
+        public bool TryResetSurface()
+        {
+            if (!_isInUse) return false;
+
+            _latte.Surface.ResetSimulation();
+            SurfaceReset?.Invoke();
+            return true;
         }
 
         public bool TryPlaceCup()
@@ -111,10 +136,14 @@ namespace LatteArt.CoffeeServing
 
             _playerController.enabled = false;
             _latte.SetHighlighted(false);
-            _toolSelector.Activate(_latte.Surface, cameraRig.ViewCamera);
             _interactor.HoldTarget(this);
             cameraRig.BlendToStation();
             InUseChanged?.Invoke(true);
+        }
+
+        private void ActivateTools()
+        {
+            if (_isInUse) _toolSelector.Activate(_latte.Surface, cameraRig.ViewCamera);
         }
 
         private void Leave()
@@ -160,7 +189,8 @@ namespace LatteArt.CoffeeServing
         private bool HasValidSetup()
         {
             if (cupAnchor != null && emptyCupPrefab != null && drawableLattePrefab != null &&
-                servedLattePrefab != null && cameraRig != null && _toolSelector != null && resetAction != null)
+                servedLattePrefab != null && cameraRig != null && _toolSelector != null &&
+                serveAction != null && resetAction != null)
             {
                 return true;
             }

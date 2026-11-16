@@ -19,6 +19,12 @@ namespace LatteArt.CoffeeTools
 
         public float Radius => _radius.Radius;
 
+        public float NormalizedRadius
+        {
+            get => _radius.NormalizedRadius;
+            set => _radius.NormalizedRadius = value;
+        }
+
         public void ResizeFromScroll()
         {
             _radius.Resize(_resizeAction.ReadValue<float>());

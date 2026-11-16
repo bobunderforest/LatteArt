@@ -23,6 +23,15 @@ namespace LatteArt.CoffeeTools.SteamWand
         public bool IsActive => _blowGrowth != null && _blowGrowth.IsFlowing;
         public float Intensity => IsActive ? Mathf.Clamp01(_blowGrowth.Radius / settings.BlowStream.MaxRadius) : 0f;
 
+        public float NormalizedRadius
+        {
+            get => _pointer != null ? _pointer.NormalizedRadius : 0f;
+            set
+            {
+                if (_pointer != null) _pointer.NormalizedRadius = value;
+            }
+        }
+
         private void Awake()
         {
             _hasValidSetup = HasValidSetup();

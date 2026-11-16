@@ -21,6 +21,8 @@ namespace LatteArt.Player
         private LookAngles _look;
         private Vector3 _horizontalVelocity;
         private Vector3 _horizontalAcceleration;
+        private Vector3 _spawnPosition;
+        private Quaternion _spawnRotation;
         private float _verticalSpeed;
 
         private void Awake()
@@ -29,6 +31,7 @@ namespace LatteArt.Player
             _hasValidSetup = HasValidSetup();
             if (!_hasValidSetup) return;
 
+            transform.GetPositionAndRotation(out _spawnPosition, out _spawnRotation);
             var initialPitch = Mathf.DeltaAngle(0f, cameraPivot.localEulerAngles.x);
             _look = new LookAngles(transform.eulerAngles.y, initialPitch, settings.MinPitch, settings.MaxPitch);
         }
@@ -49,15 +52,14 @@ namespace LatteArt.Player
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            _horizontalVelocity = Vector3.zero;
-            _horizontalAcceleration = Vector3.zero;
-            _verticalSpeed = 0f;
+            ResetMotion();
         }
 
         private void Update()
         {
             Look();
             Move(Time.deltaTime);
+            if (HasFallenOff()) Respawn();
         }
 
         private void Look()
@@ -81,6 +83,28 @@ namespace LatteArt.Player
                 : _verticalSpeed + Physics.gravity.y * deltaTime;
 
             _characterController.Move((_horizontalVelocity + Vector3.up * _verticalSpeed) * deltaTime);
+        }
+
+        private bool HasFallenOff()
+        {
+            return transform.position.y < _spawnPosition.y - settings.MaxFallDistance;
+        }
+
+        private void Respawn()
+        {
+            _characterController.enabled = false;
+            transform.SetPositionAndRotation(_spawnPosition, _spawnRotation);
+            _characterController.enabled = true;
+
+            ResetMotion();
+            _look = new LookAngles(_spawnRotation.eulerAngles.y, _look.Pitch, settings.MinPitch, settings.MaxPitch);
+        }
+
+        private void ResetMotion()
+        {
+            _horizontalVelocity = Vector3.zero;
+            _horizontalAcceleration = Vector3.zero;
+            _verticalSpeed = 0f;
         }
 
         private bool HasValidSetup()
