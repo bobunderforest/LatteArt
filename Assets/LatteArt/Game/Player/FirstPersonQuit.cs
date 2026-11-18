@@ -15,9 +15,12 @@ namespace LatteArt.Player
         private void Awake()
         {
             _controller = GetComponent<FirstPersonController>();
-#if UNITY_WEBGL && !UNITY_EDITOR
-            LeaveEmbeddingPageOnPointerUnlock();
-#endif
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                enabled = false;
+                return;
+            }
+
             if (quitAction != null) return;
 
             Debug.LogError("FirstPersonQuit has no quit action assigned.", this);
@@ -38,19 +41,9 @@ namespace LatteArt.Player
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_WEBGL
-            LeaveEmbeddingPage();
 #else
             Application.Quit();
 #endif
         }
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        [System.Runtime.InteropServices.DllImport("__Internal")]
-        private static extern void LeaveEmbeddingPage();
-
-        [System.Runtime.InteropServices.DllImport("__Internal")]
-        private static extern void LeaveEmbeddingPageOnPointerUnlock();
-#endif
     }
 }

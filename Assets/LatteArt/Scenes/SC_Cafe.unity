@@ -10171,7 +10171,7 @@ MonoBehaviour:
   - action: {fileID: -7085851618593710273, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     keyOverride: 
     caption: Quit
-    isHiddenOnWeb: 0
+    isHiddenOnWeb: 1
 --- !u!1001 &1245546452
 PrefabInstance:
   m_ObjectHideFlags: 0
